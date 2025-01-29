@@ -1,0 +1,17 @@
+{
+	"name": "mock-server",
+	"module": "index.ts",
+	"type": "module",
+	"scripts": {
+		"dev": "bunx json-server -p 9999 db.json"
+	},
+	"devDependencies": {
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5.0.0"
+	},
+	"dependencies": {
+		"json-server": "^1.0.0-beta.3"
+	}
+}

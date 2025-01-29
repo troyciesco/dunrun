@@ -1,0 +1,474 @@
+{
+	"dungeons": [
+		{
+			"id": 1,
+			"name": "Shadowfang Keep",
+			"location": "Blackwood Forest",
+			"rooms": [
+				{
+					"id": 1,
+					"enemies": ["goblin", "skeleton"]
+				},
+				{
+					"id": 2,
+					"enemies": ["orc"]
+				},
+				{
+					"id": 3,
+					"enemies": ["troll", "goblin", "skeleton"]
+				},
+				{
+					"id": 4,
+					"enemies": ["zombie"]
+				},
+				{
+					"id": 5,
+					"enemies": ["witch"]
+				},
+				{
+					"id": 6,
+					"enemies": ["dragonling", "orc"]
+				},
+				{
+					"id": 7,
+					"enemies": ["skeleton", "goblin"]
+				},
+				{
+					"id": 8,
+					"enemies": ["goblin"]
+				},
+				{
+					"id": 9,
+					"enemies": ["troll"]
+				},
+				{
+					"id": 10,
+					"enemies": ["skeleton", "witch"]
+				}
+			]
+		},
+		{
+			"id": 2,
+			"name": "Crimson Abyss",
+			"location": "Redcliff Mountains",
+			"rooms": [
+				{
+					"id": 1,
+					"enemies": ["orc"]
+				},
+				{
+					"id": 2,
+					"enemies": ["goblin", "troll"]
+				},
+				{
+					"id": 3,
+					"enemies": ["skeleton"]
+				},
+				{
+					"id": 4,
+					"enemies": ["zombie", "witch"]
+				},
+				{
+					"id": 5,
+					"enemies": ["goblin"]
+				},
+				{
+					"id": 6,
+					"enemies": ["dragonling"]
+				},
+				{
+					"id": 7,
+					"enemies": ["orc", "skeleton"]
+				},
+				{
+					"id": 8,
+					"enemies": ["troll"]
+				},
+				{
+					"id": 9,
+					"enemies": ["goblin", "witch"]
+				},
+				{
+					"id": 10,
+					"enemies": ["skeleton"]
+				}
+			]
+		},
+		{
+			"id": 3,
+			"name": "Forgotten Crypt",
+			"location": "Silent Marshes",
+			"rooms": [
+				{
+					"id": 1,
+					"enemies": ["zombie", "goblin"]
+				},
+				{
+					"id": 2,
+					"enemies": ["skeleton"]
+				},
+				{
+					"id": 3,
+					"enemies": ["orc", "troll"]
+				},
+				{
+					"id": 4,
+					"enemies": ["witch"]
+				},
+				{
+					"id": 5,
+					"enemies": ["goblin", "skeleton"]
+				},
+				{
+					"id": 6,
+					"enemies": ["troll"]
+				},
+				{
+					"id": 7,
+					"enemies": ["orc"]
+				},
+				{
+					"id": 8,
+					"enemies": ["goblin"]
+				},
+				{
+					"id": 9,
+					"enemies": ["zombie", "witch"]
+				},
+				{
+					"id": 10,
+					"enemies": ["skeleton"]
+				}
+			]
+		},
+		{
+			"id": 4,
+			"name": "Ebon Halls",
+			"location": "Darkspire Ridge",
+			"rooms": [
+				{
+					"id": 1,
+					"enemies": ["goblin"]
+				},
+				{
+					"id": 2,
+					"enemies": ["skeleton", "orc"]
+				},
+				{
+					"id": 3,
+					"enemies": ["troll"]
+				},
+				{
+					"id": 4,
+					"enemies": ["witch"]
+				},
+				{
+					"id": 5,
+					"enemies": ["goblin", "zombie"]
+				},
+				{
+					"id": 6,
+					"enemies": ["orc"]
+				},
+				{
+					"id": 7,
+					"enemies": ["skeleton"]
+				},
+				{
+					"id": 8,
+					"enemies": ["troll", "goblin"]
+				},
+				{
+					"id": 9,
+					"enemies": ["witch"]
+				},
+				{
+					"id": 10,
+					"enemies": ["skeleton", "orc"]
+				}
+			]
+		},
+		{
+			"id": 5,
+			"name": "Mistvale Caverns",
+			"location": "Foggy Hills",
+			"rooms": [
+				{
+					"id": 1,
+					"enemies": ["goblin", "troll"]
+				},
+				{
+					"id": 2,
+					"enemies": ["skeleton"]
+				},
+				{
+					"id": 3,
+					"enemies": ["orc", "witch"]
+				},
+				{
+					"id": 4,
+					"enemies": ["goblin"]
+				},
+				{
+					"id": 5,
+					"enemies": ["zombie", "skeleton"]
+				},
+				{
+					"id": 6,
+					"enemies": ["troll"]
+				},
+				{
+					"id": 7,
+					"enemies": ["orc"]
+				},
+				{
+					"id": 8,
+					"enemies": ["goblin", "witch"]
+				},
+				{
+					"id": 9,
+					"enemies": ["skeleton"]
+				},
+				{
+					"id": 10,
+					"enemies": ["troll", "orc"]
+				}
+			]
+		},
+		{
+			"id": 6,
+			"name": "Silverpeak Fortress",
+			"location": "Highland Peaks",
+			"rooms": [
+				{
+					"id": 1,
+					"enemies": ["goblin"]
+				},
+				{
+					"id": 2,
+					"enemies": ["skeleton", "orc"]
+				},
+				{
+					"id": 3,
+					"enemies": ["troll"]
+				},
+				{
+					"id": 4,
+					"enemies": ["witch", "goblin"]
+				},
+				{
+					"id": 5,
+					"enemies": ["zombie"]
+				},
+				{
+					"id": 6,
+					"enemies": ["orc", "skeleton"]
+				},
+				{
+					"id": 7,
+					"enemies": ["troll"]
+				},
+				{
+					"id": 8,
+					"enemies": ["goblin", "witch"]
+				},
+				{
+					"id": 9,
+					"enemies": ["skeleton"]
+				},
+				{
+					"id": 10,
+					"enemies": ["orc", "troll"]
+				}
+			]
+		},
+		{
+			"id": 7,
+			"name": "Crystal Underpass",
+			"location": "Glittering Caves",
+			"rooms": [
+				{
+					"id": 1,
+					"enemies": ["goblin", "skeleton"]
+				},
+				{
+					"id": 2,
+					"enemies": ["orc"]
+				},
+				{
+					"id": 3,
+					"enemies": ["troll", "witch"]
+				},
+				{
+					"id": 4,
+					"enemies": ["goblin"]
+				},
+				{
+					"id": 5,
+					"enemies": ["zombie"]
+				},
+				{
+					"id": 6,
+					"enemies": ["skeleton", "orc"]
+				},
+				{
+					"id": 7,
+					"enemies": ["troll"]
+				},
+				{
+					"id": 8,
+					"enemies": ["goblin", "witch"]
+				},
+				{
+					"id": 9,
+					"enemies": ["skeleton"]
+				},
+				{
+					"id": 10,
+					"enemies": ["orc", "troll"]
+				}
+			]
+		},
+		{
+			"id": 8,
+			"name": "Emerald Depths",
+			"location": "Verdant Valley",
+			"rooms": [
+				{
+					"id": 1,
+					"enemies": ["goblin"]
+				},
+				{
+					"id": 2,
+					"enemies": ["skeleton", "orc"]
+				},
+				{
+					"id": 3,
+					"enemies": ["troll"]
+				},
+				{
+					"id": 4,
+					"enemies": ["witch", "goblin"]
+				},
+				{
+					"id": 5,
+					"enemies": ["zombie"]
+				},
+				{
+					"id": 6,
+					"enemies": ["orc", "skeleton"]
+				},
+				{
+					"id": 7,
+					"enemies": ["troll"]
+				},
+				{
+					"id": 8,
+					"enemies": ["goblin", "witch"]
+				},
+				{
+					"id": 9,
+					"enemies": ["skeleton"]
+				},
+				{
+					"id": 10,
+					"enemies": ["orc", "troll"]
+				}
+			]
+		},
+		{
+			"id": 9,
+			"name": "Obsidian Labyrinth",
+			"location": "Shadowlands",
+			"rooms": [
+				{
+					"id": 1,
+					"enemies": ["goblin", "skeleton"]
+				},
+				{
+					"id": 2,
+					"enemies": ["orc"]
+				},
+				{
+					"id": 3,
+					"enemies": ["troll", "witch"]
+				},
+				{
+					"id": 4,
+					"enemies": ["goblin"]
+				},
+				{
+					"id": 5,
+					"enemies": ["zombie"]
+				},
+				{
+					"id": 6,
+					"enemies": ["skeleton", "orc"]
+				},
+				{
+					"id": 7,
+					"enemies": ["troll"]
+				},
+				{
+					"id": 8,
+					"enemies": ["goblin", "witch"]
+				},
+				{
+					"id": 9,
+					"enemies": ["skeleton"]
+				},
+				{
+					"id": 10,
+					"enemies": ["orc", "troll"]
+				}
+			]
+		},
+		{
+			"id": 10,
+			"name": "Frozen Citadel",
+			"location": "Icy Highlands",
+			"rooms": [
+				{
+					"id": 1,
+					"enemies": ["goblin"]
+				},
+				{
+					"id": 2,
+					"enemies": ["skeleton", "orc"]
+				},
+				{
+					"id": 3,
+					"enemies": ["troll"]
+				},
+				{
+					"id": 4,
+					"enemies": ["witch", "goblin"]
+				},
+				{
+					"id": 5,
+					"enemies": ["zombie"]
+				},
+				{
+					"id": 6,
+					"enemies": ["orc", "skeleton"]
+				},
+				{
+					"id": 7,
+					"enemies": ["troll"]
+				},
+				{
+					"id": 8,
+					"enemies": ["goblin", "witch"]
+				},
+				{
+					"id": 9,
+					"enemies": ["skeleton"]
+				},
+				{
+					"id": 10,
+					"enemies": ["orc", "troll"]
+				}
+			]
+		}
+	]
+}
