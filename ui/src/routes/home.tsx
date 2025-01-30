@@ -10,6 +10,7 @@ export function Home() {
 			console.log("connected")
 		}
 		ws.onmessage = (event) => {
+			console.log(event)
 			setMessages((m) => [...m, event.data as string])
 		}
 
@@ -18,9 +19,16 @@ export function Home() {
 		}
 	}, [])
 
+	const handleClick = async () => {
+		await fetch(`http://localhost:1111/messages`, {
+			method: "POST",
+			body: "hiiii"
+		})
+	}
 	return (
 		<div className="bg-red-400">
 			<h1 className="text-7xl">hello world</h1>
+			<button onClick={handleClick}>clickkk</button>
 			<Link to="/dungeons">Go to dungeons</Link>
 			{messages.map((message) => (
 				<div key={message}>{message}</div>
