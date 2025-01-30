@@ -1,8 +1,14 @@
 import { NavLink, Route, Routes } from "react-router"
 import { Home } from "./routes/home"
-import { Dungeons } from "./routes/dungeons"
+import { DungeonsRoute } from "./routes/dungeons"
 import { DungeonRoute } from "./routes/dungeons/+id"
 import { DungeonCreateRoute } from "./routes/dungeons/create"
+import { AdventurersRoute } from "./routes/adventurers"
+import { AdventurerRoute } from "./routes/adventurers/+id"
+import { AdventurerCreateRoute } from "./routes/adventurers/create"
+import { PartiesRoute } from "./routes/parties"
+import { PartyRoute } from "./routes/parties/+id"
+import { PartyCreateRoute } from "./routes/parties/create"
 
 function App() {
 	return (
@@ -35,7 +41,6 @@ function App() {
 						<li>
 							<NavLink to="/parties">Parties</NavLink>
 						</li>
-
 						<li>
 							<NavLink to="/parties/create">Create a Party</NavLink>
 						</li>
@@ -45,9 +50,19 @@ function App() {
 					<Routes>
 						<Route index element={<Home />} />
 						<Route path="dungeons">
-							<Route index element={<Dungeons />} />
+							<Route index element={<DungeonsRoute />} />
 							<Route path=":id" element={<DungeonRoute />} />
 							<Route path="create" element={<DungeonCreateRoute />} />
+						</Route>
+						<Route path="adventurers">
+							<Route index element={<AdventurersRoute />} />
+							<Route path=":id" element={<AdventurerRoute />} />
+							<Route path="create" element={<AdventurerCreateRoute />} />
+						</Route>
+						<Route path="parties">
+							<Route index element={<PartiesRoute />} />
+							<Route path=":id" element={<PartyRoute />} />
+							<Route path="create" element={<PartyCreateRoute />} />
 						</Route>
 					</Routes>
 				</main>

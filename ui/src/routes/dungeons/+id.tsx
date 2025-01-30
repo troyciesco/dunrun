@@ -6,7 +6,7 @@ export function DungeonRoute() {
 	const query = useQuery({
 		queryKey: ["dungeons", params.id],
 		queryFn: async () =>
-			await fetch(`http://localhost:1111/dm/${params.id}`).then(
+			await fetch(`http://localhost:1111/dungeons/${params.id}`).then(
 				async (data) => await data.json()
 			)
 	})

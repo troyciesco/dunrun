@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query"
 import { Link } from "react-router"
 
-export function Dungeons() {
+export function DungeonsRoute() {
 	const query = useQuery({
 		queryKey: ["dungeons"],
 		queryFn: async () =>
-			await fetch("http://localhost:1111/dm").then(
+			await fetch("http://localhost:1111/dungeons").then(
 				async (data) => await data.json()
 			)
 	})

@@ -1,4 +1,53 @@
 {
+	"adventurers": [
+		{
+			"id": 1,
+			"name": "Jon Doe",
+			"species": "Human",
+			"class": "Barbarian"
+		},
+		{
+			"id": 2,
+			"name": "Elara Swiftwind",
+			"species": "Elf",
+			"class": "Ranger"
+		},
+		{
+			"id": 3,
+			"name": "Thorin Stonefist",
+			"species": "Dwarf",
+			"class": "Fighter"
+		},
+		{
+			"id": 4,
+			"name": "Luna Moonshadow",
+			"species": "Half-Elf",
+			"class": "Wizard"
+		},
+		{
+			"id": 5,
+			"name": "Grunk Skullcrusher",
+			"species": "Half-Orc",
+			"class": "Paladin"
+		},
+		{
+			"id": 6,
+			"name": "Mira Lightfoot",
+			"species": "Halfling",
+			"class": "Rogue"
+		}
+	],
+	"parties": [
+		{
+			"id": 1,
+			"adventurers": [
+				{ "adventurerId": 1 },
+				{ "adventurerId": 3 },
+				{ "adventurerId": 5 },
+				{ "adventurerId": 6 }
+			]
+		}
+	],
 	"dungeons": [
 		{
 			"id": 1,
