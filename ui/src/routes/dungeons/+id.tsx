@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
+import { useEffect, useState } from "react"
 import { useParams } from "react-router"
 
 export function DungeonRoute() {
@@ -11,11 +12,39 @@ export function DungeonRoute() {
 			)
 	})
 
+	const [messages, setMessages] = useState<any[]>([])
+	// info about double messages https://github.com/facebook/create-react-app/issues/10387
+	useEffect(() => {
+		const ws = new WebSocket("ws://localhost:1111/ws")
+		ws.onopen = () => {
+			console.log("connected")
+		}
+		ws.onmessage = (event) => {
+			const eventData = JSON.parse(event.data)
+			const data = JSON.parse(eventData.body.data)
+			if (Number(data.meta.dungeonId) === Number(params.id)) {
+				setMessages((m) => [...m, eventData])
+			}
+		}
+
+		return () => {
+			ws.close()
+		}
+	}, [params.id])
+
+	const handleCreateRun = async () => {
+		await fetch(`http://localhost:1111/runs/create`, { method: "POST" })
+	}
+
+	const handleExecuteRun = async () => {
+		await fetch(`http://localhost:1111/runs/1/execute`, { method: "POST" })
+	}
+
 	return (
 		<>
 			<h1 className="text-2xl mb-4">Dungeon: {query.data?.name}</h1>
 			<div className="max-w-7xl">
-				<div className="grid grid-cols-4 gap-4">
+				<div className="grid grid-cols-4 gap-4 mb-10">
 					{query.data &&
 						query.data.rooms.map((room, index) => (
 							<div
@@ -27,6 +56,31 @@ export function DungeonRoute() {
 								<div>{room.enemies.join(", ")}</div>
 							</div>
 						))}
+				</div>
+				<div className="grid grid-cols-2 gap-4">
+					<div className="flex items-center gap-4">
+						<button
+							className="p-2 border cursor-pointer"
+							onClick={handleCreateRun}>
+							Create Run
+						</button>
+						<button
+							className="p-2 border cursor-pointer"
+							onClick={handleExecuteRun}>
+							Execute Run
+						</button>
+					</div>
+					<div>
+						<h2 className="text-3xl">Events</h2>
+						<div className="space-y-2">
+							{messages &&
+								messages.map((message) => (
+									<div key={message.body.id}>
+										{JSON.parse(message.body.data).message}
+									</div>
+								))}
+						</div>
+					</div>
 				</div>
 			</div>
 		</>

@@ -5,8 +5,9 @@ import { adventurers } from "./routes/adventurers"
 import { parties } from "./routes/parties"
 import { createBunWebSocket } from "hono/bun"
 import { createMessageRoutes } from "./routes/messages"
+import { runsRoute } from "./routes/runs"
 
-const topic = "anonymous-chat-room"
+const topic = "dungeon-runs"
 
 const app = new Hono()
 const { upgradeWebSocket, websocket } = createBunWebSocket<any>()
@@ -20,6 +21,7 @@ app.get("/", (c) => {
 app.route("/", dungeons)
 app.route("/", adventurers)
 app.route("/", parties)
+app.route("/", runsRoute)
 
 app.get(
 	"/ws",

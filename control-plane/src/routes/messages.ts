@@ -1,7 +1,7 @@
 import { Hono } from "hono"
 // import type { Server } from "your-server-type" // adjust import based on your WebSocket server type
 
-const topic = "anonymous-chat-room"
+const topic = "dungeon-runs"
 
 // Create a function that returns the routes and takes server as parameter
 export function createMessageRoutes(server: any) {
@@ -13,20 +13,21 @@ export function createMessageRoutes(server: any) {
 			return c.json(messages)
 		})
 		.post("/", async (c) => {
-			const body = await c.req.text()
+			const data = await c.req.text()
 			const currentDateTime = new Date()
-			const message = {
+			const body = {
 				id: Number(currentDateTime),
 				date: currentDateTime.toLocaleString(),
-				text: body
+				data
 			}
-			const data = {
-				action: "update chat",
-				message: message
+			const message = {
+				level: "info",
+				body
 			}
 
 			messages.push(message)
-			server.publish(topic, JSON.stringify(data))
+			server.publish(topic, JSON.stringify(message))
+			await new Promise((resolve) => setTimeout(resolve, 1000))
 
 			return c.json({ ok: true })
 		})
