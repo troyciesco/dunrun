@@ -10,14 +10,24 @@ type Run = {
 
 const currentRuns: Run[] = []
 
-const sendMsg = async (message: string) => {
+const sendMsg = async ({
+	dungeonId,
+	partyId,
+	roomId,
+	message
+}: {
+	dungeonId: number
+	partyId: number
+	roomId: number
+	message: string
+}) => {
 	await fetch(`http://localhost:1111/messages`, {
 		method: "POST",
 		body: JSON.stringify({
 			meta: {
-				dungeonId: 1,
-				partyId: 1,
-				roomId: 1
+				dungeonId,
+				partyId,
+				roomId
 			},
 			message
 		})
@@ -41,24 +51,30 @@ const simulateRun = async ({
 			(r: any) => r.id === Number(currentRoomId)
 		).enemies
 
-		await sendMsg(
-			`The party enters room ${currentRoomId}. It has ${enemies.join(", ")}!`
-		)
+		const meta = { dungeonId: dungeon.id, partyId: 1, roomId: currentRoomId }
+		await sendMsg({
+			...meta,
+			message: `The party enters room ${currentRoomId}. It has ${enemies.join(
+				", "
+			)}!`
+		})
 
 		for (let i = 0, k = 0; i < adventurers.length; i++, k++) {
 			if (k > enemies.length - 1) {
 				k = 0
 			}
-			await sendMsg(
-				`${adventurers[i].name} hits ${enemies[k]} for ${
+			await sendMsg({
+				...meta,
+				message: `${adventurers[i].name} hits ${enemies[k]} for ${
 					Math.floor(Math.random() * 20) + 1
 				} damage!`
-			)
-			await sendMsg(
-				`${enemies[k]} hits ${adventurers[i].name} for ${
+			})
+			await sendMsg({
+				...meta,
+				message: `${enemies[k]} hits ${adventurers[i].name} for ${
 					Math.floor(Math.random() * 20) + 1
 				} damage!`
-			)
+			})
 		}
 
 		if (currentRoomId === dungeon.rooms[dungeon.rooms.length - 1].id) {
@@ -74,24 +90,29 @@ const simulateRun = async ({
 export const runsRoute = new Hono()
 	.basePath("/runs")
 	.get("/", async (c) => {
-		return c.json(["1"])
+		return c.json(currentRuns)
 	})
 	.get("/:id", async (c) => {
 		return c.json(["runs by run id"])
 	})
 	.post("/create", async (c) => {
+		const { did, pid } = c.req.query()
+
 		const newRun = {
 			id: currentRuns.length + 1,
-			dungeonId: 1,
-			partyId: 1,
+			dungeonId: Number(did),
+			partyId: Number(pid),
 			roomId: 1,
 			isActive: true
 		}
 		currentRuns.push(newRun)
 
-		await sendMsg(
-			`new run created with id of ${newRun.id} for dungeon ${newRun.dungeonId}`
-		)
+		await sendMsg({
+			dungeonId: newRun.dungeonId,
+			partyId: newRun.partyId,
+			roomId: newRun.roomId,
+			message: `new run created with id of ${newRun.id} for dungeon ${newRun.dungeonId}`
+		})
 		return c.json(newRun)
 	})
 	.post("/:id/execute", async (c) => {
@@ -116,7 +137,12 @@ export const runsRoute = new Hono()
 			})
 		)
 
-		sendMsg("The party has started the run in the dungeon!")
+		sendMsg({
+			dungeonId: dungeon.id,
+			partyId: party.id,
+			roomId: 1,
+			message: "The party has started the run in the dungeon!"
+		})
 		simulateRun({ run, adventurers, dungeon })
 		return c.json("run started")
 	})

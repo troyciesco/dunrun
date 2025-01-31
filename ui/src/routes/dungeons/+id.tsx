@@ -33,11 +33,22 @@ export function DungeonRoute() {
 	}, [params.id])
 
 	const handleCreateRun = async () => {
-		await fetch(`http://localhost:1111/runs/create`, { method: "POST" })
+		await fetch(
+			`http://localhost:1111/runs/create?did=${Number(params.id)}&pid=1`,
+			{
+				method: "POST"
+				// body: JSON.stringify({ dungeonId: Number(params.id), partyId: 1 })
+			}
+		)
 	}
 
 	const handleExecuteRun = async () => {
-		await fetch(`http://localhost:1111/runs/1/execute`, { method: "POST" })
+		const res = await fetch(`http://localhost:1111/runs`)
+		const runs = await res.json()
+		const run = runs.find((r) => r.dungeonId === Number(params.id))
+		await fetch(`http://localhost:1111/runs/${run.id}/execute`, {
+			method: "POST"
+		})
 	}
 
 	return (
