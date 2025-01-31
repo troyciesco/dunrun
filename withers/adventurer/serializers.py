@@ -12,7 +12,21 @@ class AdventurerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Adventurer
-        fields = ["id", "name"]
+        fields = [
+            "id",
+            "name",
+            "species",
+            "adventurer_class",
+            "level",
+            "strength",
+            "dexterity",
+            "constitution",
+            "intelligence",
+            "wisdom",
+            "charisma",
+            "hp_base",
+            "hp_current",
+        ]
         read_only_fields = ["id"]
 
     # def create(self, validated_data):
