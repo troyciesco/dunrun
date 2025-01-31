@@ -9,6 +9,7 @@ import { AdventurerCreateRoute } from "./routes/adventurers/create"
 import { PartiesRoute } from "./routes/parties"
 import { PartyRoute } from "./routes/parties/+id"
 import { PartyCreateRoute } from "./routes/parties/create"
+import { RoomRoute } from "./routes/dungeons/rooms/+id"
 
 function App() {
 	return (
@@ -51,7 +52,10 @@ function App() {
 						<Route index element={<Home />} />
 						<Route path="dungeons">
 							<Route index element={<DungeonsRoute />} />
-							<Route path=":id" element={<DungeonRoute />} />
+							<Route path=":id">
+								<Route index element={<DungeonRoute />} />
+								<Route path="rooms/:roomId" element={<RoomRoute />} />
+							</Route>
 							<Route path="create" element={<DungeonCreateRoute />} />
 						</Route>
 						<Route path="adventurers">

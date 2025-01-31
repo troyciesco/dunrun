@@ -5,7 +5,7 @@ type Run = {
 	dungeonId: number
 	partyId: number
 	roomId: number
-	isActive: boolean
+	status: "pending" | "active" | "completed"
 }
 
 const currentRuns: Run[] = []
@@ -43,7 +43,7 @@ const simulateRun = async ({
 	adventurers: any
 	dungeon: any
 }) => {
-	let isActive = run?.isActive
+	let isActive = run?.status === "active"
 	let currentRoomId = run?.roomId
 
 	while (isActive) {
@@ -78,7 +78,9 @@ const simulateRun = async ({
 		}
 
 		if (currentRoomId === dungeon.rooms[dungeon.rooms.length - 1].id) {
+			const runIndex = currentRuns.indexOf(run)
 			isActive = false
+			currentRuns[runIndex]!.status = "completed"
 		} else {
 			const idx = dungeon.rooms.findIndex((r) => r.id === currentRoomId)
 			currentRoomId = dungeon.rooms[idx + 1].id
@@ -119,6 +121,10 @@ export const runsRoute = new Hono()
 		const run = currentRuns.find(
 			(r) => r.id === Number(c.req.param("id"))
 		) as Run
+
+		const runIndex = currentRuns.indexOf(run)
+		currentRuns[runIndex]!.status = "active"
+
 		const partyFetch = await fetch(
 			`http://localhost:9999/parties/${run?.partyId}`
 		)

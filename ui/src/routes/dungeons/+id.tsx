@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
-import { useParams } from "react-router"
+import { Link, useParams } from "react-router"
 
 export function DungeonRoute() {
 	const params = useParams()
@@ -13,7 +13,6 @@ export function DungeonRoute() {
 	})
 
 	const [messages, setMessages] = useState<any[]>([])
-	// info about double messages https://github.com/facebook/create-react-app/issues/10387
 	useEffect(() => {
 		const ws = new WebSocket("ws://localhost:1111/ws")
 		ws.onopen = () => {
@@ -23,7 +22,7 @@ export function DungeonRoute() {
 			const eventData = JSON.parse(event.data)
 			const data = JSON.parse(eventData.body.data)
 			if (Number(data.meta.dungeonId) === Number(params.id)) {
-				setMessages((m) => [...m, eventData])
+				setMessages((m) => [eventData, ...m])
 			}
 		}
 
@@ -58,14 +57,15 @@ export function DungeonRoute() {
 				<div className="grid grid-cols-4 gap-4 mb-10">
 					{query.data &&
 						query.data.rooms.map((room, index) => (
-							<div
+							<Link
+								to={`/dungeons/${query.data?.id}/rooms/${room.id}`}
 								key={room.id}
 								className="p-4 border hover:bg-red-200 transition-all">
 								<div>
 									Room {index + 1} (id: {room.id})
 								</div>
 								<div>{room.enemies.join(", ")}</div>
-							</div>
+							</Link>
 						))}
 				</div>
 				<div className="grid grid-cols-2 gap-4">
