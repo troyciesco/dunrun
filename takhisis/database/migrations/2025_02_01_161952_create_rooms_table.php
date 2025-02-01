@@ -9,11 +9,13 @@ return new class extends Migration {
      * Run the migrations.
      */
     public function up(): void {
-        Schema::create('dungeons', function (Blueprint $table) {
+        Schema::create('rooms', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('location');
+            $table->foreignId('dungeon_id')->constrained()->onDelete('cascade');
+            $table->integer('number');
             $table->timestamps();
+
+            $table->unique(['dungeon_id', 'number']);
         });
     }
 
@@ -21,6 +23,6 @@ return new class extends Migration {
      * Reverse the migrations.
      */
     public function down(): void {
-        Schema::dropIfExists('dungeons');
+        Schema::dropIfExists('rooms');
     }
 };
