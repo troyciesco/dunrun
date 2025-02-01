@@ -1,3 +1,4 @@
+import { Adventurer, Dungeon, Party } from "@/types"
 import { Hono } from "hono"
 
 type Run = {
@@ -40,16 +41,17 @@ const simulateRun = async ({
 	dungeon
 }: {
 	run: Run
-	adventurers: any
-	dungeon: any
+	adventurers: Adventurer[]
+	dungeon: Dungeon
 }) => {
-	let isActive = run?.status === "active"
-	let currentRoomId = run?.roomId
+	let isActive = run.status === "active"
+	let currentRoomId = run.roomId
 
 	while (isActive) {
+		// @TODO: error handling
 		const enemies = dungeon.rooms.find(
-			(r: any) => r.id === Number(currentRoomId)
-		).enemies
+			(r) => r.id === Number(currentRoomId)
+		)!.enemies
 
 		const meta = { dungeonId: dungeon.id, partyId: 1, roomId: currentRoomId }
 		await sendMsg({
@@ -65,25 +67,29 @@ const simulateRun = async ({
 			}
 			await sendMsg({
 				...meta,
-				message: `${adventurers[i].name} hits ${enemies[k]} for ${
+				// @TODO: error handling
+				message: `${adventurers[i]!.name} hits ${enemies[k]} for ${
 					Math.floor(Math.random() * 20) + 1
 				} damage!`
 			})
 			await sendMsg({
 				...meta,
-				message: `${enemies[k]} hits ${adventurers[i].name} for ${
+				// @TODO: error handling
+				message: `${enemies[k]} hits ${adventurers[i]!.name} for ${
 					Math.floor(Math.random() * 20) + 1
 				} damage!`
 			})
 		}
 
-		if (currentRoomId === dungeon.rooms[dungeon.rooms.length - 1].id) {
+		// @TODO: error handling
+		if (currentRoomId === dungeon.rooms[dungeon.rooms.length - 1]!.id) {
 			const runIndex = currentRuns.indexOf(run)
 			isActive = false
 			currentRuns[runIndex]!.status = "completed"
 		} else {
 			const idx = dungeon.rooms.findIndex((r) => r.id === currentRoomId)
-			currentRoomId = dungeon.rooms[idx + 1].id
+			// @TODO: error handling
+			currentRoomId = dungeon.rooms[idx + 1]!.id
 			console.log(currentRoomId)
 		}
 	}
@@ -100,13 +106,14 @@ export const runsRoute = new Hono()
 	.post("/create", async (c) => {
 		const { did, pid } = c.req.query()
 
-		const newRun = {
+		const newRun: Run = {
 			id: currentRuns.length + 1,
 			dungeonId: Number(did),
 			partyId: Number(pid),
 			roomId: 1,
-			isActive: true
+			status: "active"
 		}
+
 		currentRuns.push(newRun)
 
 		await sendMsg({
@@ -128,13 +135,13 @@ export const runsRoute = new Hono()
 		const partyFetch = await fetch(
 			`http://localhost:9999/parties/${run?.partyId}`
 		)
-		const party = await partyFetch.json()
+		const party: Party = await partyFetch.json()
 		const dungeonFetch = await fetch(
 			`http://localhost:9999/dungeons/${run?.dungeonId}`
 		)
-		const dungeon = await dungeonFetch.json()
+		const dungeon: Dungeon = await dungeonFetch.json()
 
-		const adventurers = await Promise.all(
+		const adventurers: Adventurer[] = await Promise.all(
 			party.adventurers.map(async (member) => {
 				const response = await fetch(
 					`http://localhost:9999/adventurers/${member.adventurerId}`
