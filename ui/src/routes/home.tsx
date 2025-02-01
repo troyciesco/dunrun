@@ -1,7 +1,9 @@
+import { useAuth } from "@clerk/react-router"
 import { useEffect, useState } from "react"
 import { Link } from "react-router"
 
 export function Home() {
+	const { getToken } = useAuth()
 	const [messages, setMessages] = useState<string[]>([])
 	// info about double messages https://github.com/facebook/create-react-app/issues/10387
 	useEffect(() => {
@@ -25,10 +27,34 @@ export function Home() {
 			body: "hiiii"
 		})
 	}
+
+	const handleCheckAuth = async () => {
+		console.log("hit")
+		const token = await getToken()
+		const res = await fetch(`http://localhost:1111`, {
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`
+			}
+		})
+		const data = await res.json()
+		console.log(data)
+	}
 	return (
-		<div className="bg-red-400">
-			<h1 className="text-7xl">hello world</h1>
-			<button onClick={handleClick}>clickkk</button>
+		<div>
+			<h1 className="text-7xl mb-10">hello world</h1>
+			<div className="flex items-center gap-4">
+				<button
+					className="py-2 px-4 border cursor-pointer"
+					onClick={handleClick}>
+					clickkk
+				</button>
+				<button
+					className="py-2 px-4 border cursor-pointer"
+					onClick={handleCheckAuth}>
+					check auth
+				</button>
+			</div>
 			<Link to="/dungeons">Go to dungeons</Link>
 			{messages.map((message) => (
 				<div key={message}>{message}</div>

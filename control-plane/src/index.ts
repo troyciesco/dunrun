@@ -6,16 +6,31 @@ import { parties } from "./routes/parties"
 import { createBunWebSocket } from "hono/bun"
 import { createMessageRoutes } from "./routes/messages"
 import { runsRoute } from "./routes/runs"
+import { clerkMiddleware, getAuth } from "@hono/clerk-auth"
 
 const topic = "dungeon-runs"
 
 const app = new Hono()
+app.use("*", clerkMiddleware())
+
 const { upgradeWebSocket, websocket } = createBunWebSocket<any>()
 
 app.use("/*", cors())
 
 app.get("/", (c) => {
-	return c.text("Hello Hono!")
+	console.log("hit!")
+	const auth = getAuth(c)
+
+	if (!auth?.userId) {
+		return c.json({
+			message: "You are not logged in."
+		})
+	}
+
+	return c.json({
+		message: "You are logged in!",
+		userId: auth.userId
+	})
 })
 
 app.route("/", dungeons)
