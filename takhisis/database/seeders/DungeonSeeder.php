@@ -11,6 +11,6 @@ class DungeonSeeder extends Seeder {
      * Run the database seeds.
      */
     public function run(): void {
-        Dungeon::factory()->count(5)->create();
+        Dungeon::factory()->count(1)->create();
     }
 }
