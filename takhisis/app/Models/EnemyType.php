@@ -5,6 +5,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class EnemyType extends Model {
@@ -29,5 +30,9 @@ class EnemyType extends Model {
             ->count();
 
         return $usedCount < $this->available_count;
+    }
+
+    public function rooms(): BelongsToMany {
+        return $this->belongsToMany(Room::class, 'room_enemy_types');
     }
 }

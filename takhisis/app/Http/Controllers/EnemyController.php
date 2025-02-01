@@ -12,10 +12,26 @@ use Illuminate\Support\Str;
 class EnemyController extends Controller {
   public function index(?Dungeon $dungeon = null, ?Room $room = null): JsonResponse {
     if ($room) {
-      $uniqueEnemies = UniqueEnemy::where('room_id', $room->id)
-        ->with('enemyType')
-        ->get();
-      return response()->json($uniqueEnemies);
+      $room->load(['enemyTypes', 'uniqueEnemies.enemyType']);
+
+      return response()->json([
+        'enemy_types' => $room->enemyTypes->map(function ($enemyType) {
+          return [
+            'id' => $enemyType->id,
+            'name' => $enemyType->name,
+            'base_type' => $enemyType->base_type,
+            'tier' => $enemyType->tier,
+          ];
+        }),
+        'unique_enemies' => $room->uniqueEnemies->map(function ($uniqueEnemy) {
+          return [
+            'id' => $uniqueEnemy->id,
+            'name' => $uniqueEnemy->name,
+            'base_type' => $uniqueEnemy->base_type ?? $uniqueEnemy->enemyType?->base_type,
+            'category' => $uniqueEnemy->category,
+          ];
+        }),
+      ]);
     }
 
     $types = EnemyType::all();
