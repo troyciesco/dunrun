@@ -1,10 +1,11 @@
+import { Dungeon } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router"
 
 export function RoomRoute() {
 	const params = useParams()
-	const query = useQuery({
+	const query = useQuery<Dungeon>({
 		queryKey: ["dungeons", params.id],
 		queryFn: async () =>
 			await fetch(`http://localhost:1111/dungeons/${params.id}`).then(
@@ -36,15 +37,16 @@ export function RoomRoute() {
 
 	return (
 		<>
-			<h1 className="text-2xl mb-4">
+			<h1 className="mb-4 text-2xl">
 				Dungeon: {query.data?.name} | Room : {params.roomId}
 			</h1>
 			<p>
 				Enemies:{" "}
 				{query.data &&
 					query.data.rooms
-						.find((r) => r.id === Number(params.roomId))
-						.enemies.join(", ")}
+						.find((r) => r.id === Number(params.roomId))!
+						.enemies!.map((e) => e.name)
+						.join(", ")}
 			</p>
 			<div className="max-w-7xl">
 				<div className="grid grid-cols-2 gap-4">

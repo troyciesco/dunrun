@@ -12,7 +12,7 @@ export function DungeonsRoute() {
 
 	return (
 		<>
-			<h1 className="text-2xl mb-4">Dungeons</h1>
+			<h1 className="mb-4 text-2xl">Dungeons</h1>
 			<div className="max-w-7xl">
 				<div className="grid grid-cols-4 gap-4">
 					{query.data &&
@@ -21,7 +21,7 @@ export function DungeonsRoute() {
 								// Start of Selection
 								to={`/dungeons/${dungeon.id}`}
 								key={dungeon.id}
-								className="p-4 border hover:bg-red-200 transition-all">
+								className="hover:bg-red-200 p-4 border transition-all">
 								<div className="mb-2">
 									<h2 className="text-xl font-bold">{dungeon.name}</h2>
 									<p className="italic">{dungeon.location}</p>
@@ -29,7 +29,10 @@ export function DungeonsRoute() {
 								<p>
 									{dungeon.rooms.length} rooms |{" "}
 									{dungeon.rooms.reduce(
-										(acc, room) => acc + room.enemies.length,
+										(acc, room) =>
+											acc +
+											room.enemy_types.length +
+											room.unique_enemies.length,
 										0
 									)}{" "}
 									enemies

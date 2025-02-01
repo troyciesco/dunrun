@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router"
+import { Dungeon } from "@/types"
 
 export function DungeonRoute() {
 	const params = useParams()
-	const query = useQuery({
+	const query = useQuery<Dungeon>({
 		queryKey: ["dungeons", params.id],
 		queryFn: async () =>
 			await fetch(`http://localhost:1111/dungeons/${params.id}`).then(
@@ -52,7 +53,7 @@ export function DungeonRoute() {
 
 	return (
 		<>
-			<h1 className="text-2xl mb-4">Dungeon: {query.data?.name}</h1>
+			<h1 className="mb-4 text-2xl">Dungeon: {query.data?.name}</h1>
 			<div className="max-w-7xl">
 				<div className="grid grid-cols-4 gap-4 mb-10">
 					{query.data &&
@@ -60,16 +61,18 @@ export function DungeonRoute() {
 							<Link
 								to={`/dungeons/${query.data?.id}/rooms/${room.id}`}
 								key={room.id}
-								className="p-4 border hover:bg-red-200 transition-all">
+								className="hover:bg-red-200 p-4 border transition-all">
 								<div>
 									Room {index + 1} (id: {room.id})
 								</div>
-								<div>{room.enemies.join(", ")}</div>
+								<div>
+									{room.enemies && room.enemies.map((e) => e.name).join(", ")}
+								</div>
 							</Link>
 						))}
 				</div>
 				<div className="grid grid-cols-2 gap-4">
-					<div className="flex items-center gap-4">
+					<div className="flex gap-4 items-center">
 						<button
 							className="p-2 border cursor-pointer"
 							onClick={handleCreateRun}>

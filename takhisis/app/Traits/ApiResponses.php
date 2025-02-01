@@ -3,13 +3,13 @@
 namespace App\Traits;
 
 trait ApiResponses {
-  protected function ok($message) {
-    return $this->success($message);
+  protected function ok($data) {
+    return $this->success($data);
   }
 
-  protected function success($message, $statusCode = 200) {
+  protected function success($data, $statusCode = 200) {
     return response()->json([
-      'message' => $message,
+      'data' => $data,
     ], $statusCode);
   }
 }

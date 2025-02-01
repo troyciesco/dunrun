@@ -6,14 +6,26 @@ use App\Http\Requests\StoreDungeonRequest;
 use App\Http\Requests\UpdateDungeonRequest;
 use App\Models\Dungeon;
 use App\Traits\ApiResponses;
+use App\Traits\HandlesIncludes;
+use Illuminate\Http\Request;
 
 class DungeonController extends Controller {
-    use ApiResponses;
+    use ApiResponses, HandlesIncludes;
+
+    private array $allowedIncludes = ['rooms', 'rooms.enemyTypes', 'rooms.uniqueEnemies'];
+
     /**
      * Display a listing of the resource.
      */
-    public function index() {
-        return $this->ok('hi index');
+    public function index(Request $request) {
+        $query = Dungeon::query();
+
+        if ($includes = $this->getRequestedIncludes()) {
+            $query->with($includes);
+        }
+
+        $dungeons = $query->get();
+        return $this->ok($dungeons);
     }
 
     /**
@@ -33,8 +45,12 @@ class DungeonController extends Controller {
     /**
      * Display the specified resource.
      */
-    public function show(Dungeon $dungeon) {
-        return $this->ok('hi show');
+    public function show(Request $request, Dungeon $dungeon) {
+        if ($includes = $this->getRequestedIncludes()) {
+            $dungeon->load($includes);
+        }
+
+        return $this->ok($dungeon);
     }
 
     /**
