@@ -59,7 +59,7 @@ export function DungeonRoute() {
 					{query.data &&
 						query.data.rooms.map((room, index) => (
 							<Link
-								to={`/dungeons/${query.data?.id}/rooms/${room.id}`}
+								to={`/dungeons/${query.data?.id}/rooms/${room.number}`}
 								key={room.id}
 								className="hover:bg-red-200 p-4 border transition-all">
 								<div>

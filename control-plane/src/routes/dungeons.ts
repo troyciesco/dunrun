@@ -1,28 +1,24 @@
-import { Dungeon, Room } from "@/types"
+import { Dungeon } from "@/types"
 import { Hono } from "hono"
+import { env } from "hono/adapter"
 
 export const dungeons = new Hono()
 	.basePath("/dungeons")
 	.get("/", async (c) => {
+		const { DM_API_URL } = env<{ DM_API_URL: string }>(c)
+
 		const res = await fetch(
-			`http://takhisis.test/api/dungeons?include=rooms,rooms.enemyTypes,rooms.uniqueEnemies`
+			`${DM_API_URL}/dungeons?include=rooms,rooms.enemies`
 		)
 		const { data: dungeons }: { data: Dungeon[] } = await res.json()
 		return c.json(dungeons)
 	})
 	.get("/:id", async (c) => {
+		const { DM_API_URL } = env<{ DM_API_URL: string }>(c)
+
 		const res = await fetch(
-			`http://takhisis.test/api/dungeons/${c.req.param(
-				"id"
-			)}?include=rooms,rooms.enemyTypes,rooms.uniqueEnemies`
+			`${DM_API_URL}/dungeons/${c.req.param("id")}?include=rooms,rooms.enemies`
 		)
 		const { data: dungeon }: { data: Dungeon } = await res.json()
-
-		dungeon.rooms = dungeon.rooms.map(
-			({ enemy_types, unique_enemies, ...room }: Room) => ({
-				...room,
-				enemies: [...(enemy_types || []), ...(unique_enemies || [])]
-			})
-		)
 		return c.json(dungeon)
 	})

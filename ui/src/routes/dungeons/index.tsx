@@ -1,12 +1,15 @@
+// import { API_URL } from "@/constants"
+import { Dungeon } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 import { Link } from "react-router"
 
+const API_URL = import.meta.env.VITE_API_URL
 export function DungeonsRoute() {
 	const query = useQuery({
 		queryKey: ["dungeons"],
 		queryFn: async () =>
-			await fetch("http://localhost:1111/dungeons").then(
-				async (data) => await data.json()
+			await fetch(`${API_URL}/dungeons`).then(
+				async (data) => (await data.json()) as Dungeon[]
 			)
 	})
 
@@ -29,10 +32,7 @@ export function DungeonsRoute() {
 								<p>
 									{dungeon.rooms.length} rooms |{" "}
 									{dungeon.rooms.reduce(
-										(acc, room) =>
-											acc +
-											room.enemy_types.length +
-											room.unique_enemies.length,
+										(acc, room) => acc + room.enemies!.length,
 										0
 									)}{" "}
 									enemies

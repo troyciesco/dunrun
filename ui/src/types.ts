@@ -44,33 +44,25 @@ export type Party = {
 	adventurers: { adventurerId: number }[]
 }
 
-export type EnemyType = {
+export type Enemy = {
 	id: number
+	room_id: number | null
 	name: string
 	base_type: string
 	tier: string
-	available_count: number
-	created_at: string
-	updated_at: string
-}
-
-export type UniqueEnemy = {
-	id: number
-	enemy_type_id: number | null
-	name: string
+	is_unique: boolean
+	current_hp: number
+	max_hp: number
+	is_alive: boolean
 	is_available: boolean
-	created_at: string
-	updated_at: string
-	base_type: string
-	category: string
-	room_id: number
 }
 
 export type Room = {
 	id: number
+	number: number
 	enemy_types?: string[]
 	unique_enemies?: string[]
-	enemies?: (EnemyType | UniqueEnemy)[]
+	enemies?: Enemy[]
 }
 
 export type Dungeon = {

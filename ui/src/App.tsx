@@ -20,7 +20,7 @@ import {
 function App() {
 	return (
 		<div className="flex flex-col min-h-screen">
-			<header className="p-4 border-b flex items-center justify-between">
+			<header className="flex justify-between items-center p-4 border-b">
 				<div>DunRun</div>
 				<div>
 					<SignedOut>
@@ -32,7 +32,7 @@ function App() {
 				</div>
 			</header>
 			<div className="grid grid-cols-12 w-full min-h-[calc(100vh-57px)]">
-				<div className="space-y-10  col-span-2 p-4 border-r">
+				<div className="col-span-2 p-4 space-y-10 border-r">
 					<ul className="flex flex-col">
 						<li>
 							<NavLink to="/">Home</NavLink>
@@ -70,7 +70,7 @@ function App() {
 							<Route index element={<DungeonsRoute />} />
 							<Route path=":id">
 								<Route index element={<DungeonRoute />} />
-								<Route path="rooms/:roomId" element={<RoomRoute />} />
+								<Route path="rooms/:roomNumber" element={<RoomRoute />} />
 							</Route>
 							<Route path="create" element={<DungeonCreateRoute />} />
 						</Route>

@@ -1,4 +1,4 @@
-import { Dungeon } from "@/types"
+import { Dungeon, Room } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router"
@@ -13,6 +13,11 @@ export function RoomRoute() {
 			)
 	})
 
+	const room: Room | null =
+		(query.data &&
+			query.data.rooms.find((r) => r.number === Number(params.roomNumber))) ||
+		null
+
 	const [messages, setMessages] = useState<any[]>([])
 	useEffect(() => {
 		const ws = new WebSocket("ws://localhost:1111/ws")
@@ -22,9 +27,10 @@ export function RoomRoute() {
 		ws.onmessage = (event) => {
 			const eventData = JSON.parse(event.data)
 			const data = JSON.parse(eventData.body.data)
+			// @TODO: decide if i should be basing room events on the id or the number
 			if (
 				Number(data.meta.dungeonId) === Number(params.id) &&
-				Number(data.meta.roomId) === Number(params.roomId)
+				Number(data.meta.roomId) === Number(room?.id)
 			) {
 				setMessages((m) => [eventData, ...m])
 			}
@@ -33,21 +39,14 @@ export function RoomRoute() {
 		return () => {
 			ws.close()
 		}
-	}, [params.id, params.roomId])
+	}, [params.id, room?.id])
 
 	return (
 		<>
 			<h1 className="mb-4 text-2xl">
-				Dungeon: {query.data?.name} | Room : {params.roomId}
+				Dungeon: {query.data?.name} | Room : {params.roomNumber}
 			</h1>
-			<p>
-				Enemies:{" "}
-				{query.data &&
-					query.data.rooms
-						.find((r) => r.id === Number(params.roomId))!
-						.enemies!.map((e) => e.name)
-						.join(", ")}
-			</p>
+			<p>Enemies: {room && room.enemies!.map((e) => e.name).join(", ")}</p>
 			<div className="max-w-7xl">
 				<div className="grid grid-cols-2 gap-4">
 					<div>
