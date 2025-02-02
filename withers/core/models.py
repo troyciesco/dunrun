@@ -3,29 +3,17 @@ from django.core.validators import MinValueValidator
 
 
 class Species(models.TextChoices):
-    DRAGONBORN = "Dragonborn", "Dragonborn"
     DWARF = "Dwarf", "Dwarf"
     ELF = "Elf", "Elf"
-    GNOME = "Gnome", "Gnome"
     HALFLING = "Halfling", "Halfling"
-    HALF_ELF = "Half-Elf", "Half-Elf"
-    HALF_ORC = "Half-Orc", "Half-Orc"
     HUMAN = "Human", "Human"
-    TIEFLING = "Tiefling", "Tiefling"
 
 
 class AdventurerClass(models.TextChoices):
-    BARBARIAN = "Barbarian", "Barbarian"
     BARD = "Bard", "Bard"
     CLERIC = "Cleric", "Cleric"
-    DRUID = "Druid", "Druid"
     FIGHTER = "Fighter", "Fighter"
-    MONK = "Monk", "Monk"
-    PALADIN = "Paladin", "Paladin"
-    RANGER = "Ranger", "Ranger"
     ROGUE = "Rogue", "Rogue"
-    SORCERER = "Sorcerer", "Sorcerer"
-    WARLOCK = "Warlock", "Warlock"
     WIZARD = "Wizard", "Wizard"
 
 
@@ -44,8 +32,28 @@ class Adventurer(models.Model):
     intelligence = models.PositiveSmallIntegerField(default=8)
     wisdom = models.PositiveSmallIntegerField(default=8)
     charisma = models.PositiveSmallIntegerField(default=8)
+    armor_class = models.PositiveSmallIntegerField(default=10)
     hp_base = models.PositiveSmallIntegerField(default=10)
     hp_current = models.PositiveSmallIntegerField(default=10)
+    party = models.ForeignKey(
+        "Party",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="adventurers",
+    )
+
+    def __str__(self):
+        return self.name
+
+
+class Party(models.Model):
+    """Party object."""
+
+    class Meta:
+        verbose_name_plural = "Parties"
+
+    name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name

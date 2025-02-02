@@ -24,4 +24,5 @@ urlpatterns = [
     path("healthz/", health_check, name="health-check"),
     path("api-auth/", include("rest_framework.urls")),
     path("api/adventurers", include("adventurer.urls")),
+    path("api/parties", include("party.urls")),
 ]
