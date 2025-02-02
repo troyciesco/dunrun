@@ -125,7 +125,7 @@ export const runsRoute = new Hono<Env>()
 		return c.json(newRun)
 	})
 	.post("/:id/execute", async (c) => {
-		const { DM_API_URL } = env(c)
+		const { DM_API_URL, PM_API_URL } = env(c)
 
 		const run = currentRuns.find(
 			(r) => r.id === Number(c.req.param("id"))
@@ -134,9 +134,7 @@ export const runsRoute = new Hono<Env>()
 		const runIndex = currentRuns.indexOf(run)
 		currentRuns[runIndex]!.status = "active"
 
-		const partyFetch = await fetch(
-			`http://localhost:9999/parties/${run?.partyId}`
-		)
+		const partyFetch = await fetch(`${PM_API_URL}/parties/${run?.partyId}`)
 		const party: Party = await partyFetch.json()
 		console.log(run?.dungeonId)
 		const dungeonFetch = await fetch(
@@ -148,7 +146,7 @@ export const runsRoute = new Hono<Env>()
 		const adventurers: Adventurer[] = await Promise.all(
 			party.adventurers.map(async (member) => {
 				const response = await fetch(
-					`http://localhost:9999/adventurers/${member.adventurerId}`
+					`${PM_API_URL}/adventurers/${member.adventurerId}`
 				)
 				return response.json()
 			})

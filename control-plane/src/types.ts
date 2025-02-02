@@ -74,5 +74,6 @@ export type Dungeon = {
 export type Env = {
 	Bindings: {
 		DM_API_URL: string
+		PM_API_URL: string
 	}
 }

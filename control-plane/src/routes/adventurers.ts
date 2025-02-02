@@ -1,10 +1,12 @@
-import { Adventurer } from "@/types"
+import { Adventurer, Env } from "@/types"
 import { Hono } from "hono"
+import { env } from "hono/adapter"
 
-export const adventurers = new Hono()
+export const adventurers = new Hono<Env>()
 	.basePath("/adventurers")
 	.get("/", async (c) => {
-		const res = await fetch(`http://localhost:8000/api/adventurers`)
+		const { PM_API_URL } = env(c)
+		const res = await fetch(`${PM_API_URL}/adventurers`)
 		const data = await res.json()
 		const adventurers: Adventurer[] = data.map(
 			({
@@ -18,9 +20,9 @@ export const adventurers = new Hono()
 		return c.json(adventurers)
 	})
 	.get("/:id", async (c) => {
-		const res = await fetch(
-			`http://localhost:9999/adventurers/${c.req.param("id")}`
-		)
+		const { PM_API_URL } = env(c)
+
+		const res = await fetch(`${PM_API_URL}/adventurers/${c.req.param("id")}`)
 		const data: Adventurer = await res.json()
 		return c.json(data)
 	})
