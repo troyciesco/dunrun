@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dungeon;
+use App\Models\Enemy;
 use App\Models\Room;
 use App\Models\EnemyType;
 use App\Models\UniqueEnemy;
@@ -12,60 +13,46 @@ use Illuminate\Support\Str;
 class EnemyController extends Controller {
   public function index(?Dungeon $dungeon = null, ?Room $room = null): JsonResponse {
     if ($room) {
-      $room->load(['enemyTypes', 'uniqueEnemies.enemyType']);
-
       return response()->json([
-        'enemy_types' => $room->enemyTypes->map(function ($enemyType) {
-          return [
-            'id' => $enemyType->id,
-            'name' => $enemyType->name,
-            'base_type' => $enemyType->base_type,
-            'tier' => $enemyType->tier,
-          ];
-        }),
-        'unique_enemies' => $room->uniqueEnemies->map(function ($uniqueEnemy) {
-          return [
-            'id' => $uniqueEnemy->id,
-            'name' => $uniqueEnemy->name,
-            'base_type' => $uniqueEnemy->base_type ?? $uniqueEnemy->enemyType?->base_type,
-            'category' => $uniqueEnemy->category,
-          ];
-        }),
+        'enemies' => $room->enemies()
+          ->where('is_alive', true)
+          ->get()
+          ->map(fn($enemy) => [
+            'id' => $enemy->id,
+            'name' => $enemy->name,
+            'base_type' => $enemy->base_type,
+            'tier' => $enemy->tier,
+            'is_unique' => $enemy->is_unique,
+            'current_hp' => $enemy->current_hp,
+            'max_hp' => $enemy->max_hp,
+          ])
       ]);
     }
 
-    $types = EnemyType::all();
-    $uniques = UniqueEnemy::with('enemyType')->get();
-
+    // Return templates and unique enemies for the main listing
     return response()->json([
-      'types' => $types,
-      'unique_enemies' => $uniques,
+      'base_templates' => Enemy::whereNull('room_id')
+        ->where('tier', 'base')
+        ->where('is_unique', false)
+        ->get(),
+      'minor_templates' => Enemy::whereNull('room_id')
+        ->where('tier', 'minor')
+        ->where('is_unique', false)
+        ->get(),
+      'unique_enemies' => Enemy::where('is_unique', true)
+        ->get()
     ]);
   }
 
   public function show(string $slug): JsonResponse {
-    $name = Str::title(str_replace('-', ' ', $slug));
+    $name = str_replace('-', ' ', $slug);
 
-    $uniqueEnemy = UniqueEnemy::where('name', $name)
-      ->with('enemyType')
-      ->first();
+    $enemy = Enemy::where('name', 'LIKE', $name)
+      ->when(request()->has('template'), function ($query) {
+        return $query->whereNull('room_id');
+      })
+      ->firstOrFail();
 
-    if ($uniqueEnemy) {
-      return response()->json([
-        'type' => 'unique',
-        'enemy' => $uniqueEnemy
-      ]);
-    }
-
-    $enemyType = EnemyType::where('name', $name)->first();
-
-    if ($enemyType) {
-      return response()->json([
-        'type' => 'template',
-        'enemy' => $enemyType
-      ]);
-    }
-
-    return response()->json(['message' => 'Enemy not found'], 404);
+    return response()->json($enemy);
   }
 }

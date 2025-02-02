@@ -2,124 +2,101 @@
 
 namespace Database\Seeders;
 
-use App\Models\EnemyType;
-use App\Models\UniqueEnemy;
+use App\Models\Enemy;
 use Illuminate\Database\Seeder;
 
 class EnemySeeder extends Seeder {
   public function run(): void {
     // Create base enemy types
-    EnemyType::create([
+    Enemy::create([
       'name' => 'Goblin',
       'base_type' => 'goblin',
       'tier' => 'base',
-      'available_count' => -1,
+      'current_hp' => 10,
+      'max_hp' => 10
     ]);
 
-    EnemyType::create([
+    Enemy::create([
       'name' => 'Skeleton',
       'base_type' => 'skeleton',
       'tier' => 'base',
-      'available_count' => -1,
+      'current_hp' => 10,
+      'max_hp' => 10
     ]);
 
     // Create minor enemy types
-    EnemyType::create([
+    Enemy::create([
       'name' => 'Goblin Leader',
       'base_type' => 'goblin',
       'tier' => 'minor',
-      'available_count' => 10,
+      'current_hp' => 20,
+      'max_hp' => 20
     ]);
 
+    // $goblinTemplate = Enemy::template('goblin', 'base')->first();
     // Create unique enemies
-    $goblinType = EnemyType::where('base_type', 'goblin')->first();
-    UniqueEnemy::create([
-      'enemy_type_id' => $goblinType->id,
+    Enemy::create([
       'name' => 'Uktuk Borgdan',
+      'base_type' => 'goblin',
+      'tier' => 'major',
       'is_available' => true,
+      'current_hp' => 75,
+      'max_hp' => 75,
     ]);
 
-    UniqueEnemy::create([
-      'enemy_type_id' => $goblinType->id,
+    Enemy::create([
       'name' => 'Gruknak the Wise',
+      'base_type' => 'goblin',
+      'tier' => 'major',
       'is_available' => true,
+      'current_hp' => 85,
+      'max_hp' => 85,
     ]);
 
-    UniqueEnemy::create([
-      'enemy_type_id' => $goblinType->id,
+    Enemy::create([
       'name' => 'Zix Bloodfist',
+      'base_type' => 'goblin',
+      'tier' => 'major',
       'is_available' => true,
+      'current_hp' => 95,
+      'max_hp' => 95,
     ]);
 
     // Create standalone unique enemies
-    UniqueEnemy::create([
+    Enemy::create([
       'name' => 'Myrkul',
       'base_type' => 'deity',
-      'category' => 'undead',
+      'tier' => 'major',
       'is_available' => true,
+      'current_hp' => 160,
+      'max_hp' => 160,
     ]);
 
-    UniqueEnemy::create([
+    Enemy::create([
       'name' => 'Orcus',
       'base_type' => 'demon',
-      'category' => 'demon-lord',
+      'tier' => 'major',
       'is_available' => true,
+      'current_hp' => 170,
+      'max_hp' => 170,
     ]);
 
-    UniqueEnemy::create([
+    Enemy::create([
       'name' => 'Vecna',
       'base_type' => 'deity',
-      'category' => 'undead',
+      'tier' => 'major',
       'is_available' => true,
+      'current_hp' => 175,
+      'max_hp' => 175,
     ]);
 
-    UniqueEnemy::create([
+    Enemy::create([
       'name' => 'Demogorgon',
       'base_type' => 'demon',
-      'category' => 'demon-lord',
+      'tier' => 'major',
       'is_available' => true,
-    ]);
-
-    UniqueEnemy::create([
-      'name' => 'Lolth',
-      'base_type' => 'deity',
-      'category' => 'demon-lord',
-      'is_available' => true,
-    ]);
-
-    UniqueEnemy::create([
-      'name' => 'Tiamat',
-      'base_type' => 'deity',
-      'category' => 'dragon-queen',
-      'is_available' => true,
-    ]);
-
-    UniqueEnemy::create([
-      'name' => 'Asmodeus',
-      'base_type' => 'deity',
-      'category' => 'archdevil',
-      'is_available' => true,
-    ]);
-
-    UniqueEnemy::create([
-      'name' => 'Baphomet',
-      'base_type' => 'demon',
-      'category' => 'demon-lord',
-      'is_available' => true,
-    ]);
-
-    UniqueEnemy::create([
-      'name' => 'Zuggtmoy',
-      'base_type' => 'demon',
-      'category' => 'demon-lord',
-      'is_available' => true,
-    ]);
-
-    UniqueEnemy::create([
-      'name' => 'Juiblex',
-      'base_type' => 'demon',
-      'category' => 'demon-lord',
-      'is_available' => true,
+      'current_hp' => 180,
+      'max_hp' => 180,
     ]);
   }
 }

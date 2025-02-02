@@ -2,19 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Models\EnemyType;
-use App\Models\UniqueEnemy;
+use App\Models\Enemy;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Room>
- */
 class RoomFactory extends Factory {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array {
         return [
             'dungeon_id' => \App\Models\Dungeon::factory(),
@@ -29,9 +20,18 @@ class RoomFactory extends Factory {
         $dungeon = $dungeon ?? \App\Models\Dungeon::factory()->create();
 
         // Get available enemies
-        $baseEnemies = EnemyType::where('tier', 'base')->pluck('id')->toArray();
-        $minorEnemies = EnemyType::where('tier', 'minor')->pluck('id')->toArray();
-        $uniqueEnemies = UniqueEnemy::where('is_available', true)
+        $baseTemplates = Enemy::where('tier', 'base')
+            ->whereNull('room_id')
+            ->where('is_unique', false)
+            ->get();
+
+        $minorTemplates = Enemy::where('tier', 'minor')
+            ->whereNull('room_id')
+            ->where('is_unique', false)
+            ->get();
+
+        $uniqueEnemies = Enemy::where('is_unique', true)
+            ->where('is_available', true)
             ->whereNull('room_id')
             ->get();
 
@@ -43,28 +43,38 @@ class RoomFactory extends Factory {
 
             // Add 2-6 base enemies to every room
             $baseCount = fake()->numberBetween(2, 6);
-            $selectedBaseEnemies = array_fill(0, $baseCount, fake()->randomElement($baseEnemies));
-            $room->enemyTypes()->attach($selectedBaseEnemies);
+            for ($j = 0; $j < $baseCount; $j++) {
+                $template = $baseTemplates->random();
+                $room->enemies()->save($template->spawn());
+            }
 
             // Add minor enemies to specific rooms
             if (in_array($i, [3, 5, 7])) {
                 $minorCount = fake()->numberBetween(1, 2);
-                $selectedMinorEnemies = array_fill(0, $minorCount, fake()->randomElement($minorEnemies));
-                $room->enemyTypes()->attach($selectedMinorEnemies);
+                for ($j = 0; $j < $minorCount; $j++) {
+                    $template = $minorTemplates->random();
+                    $room->enemies()->save($template->spawn());
+                }
             }
 
             if (in_array($i, [9, 10])) {
-                $selectedMinorEnemies = array_fill(0, 2, fake()->randomElement($minorEnemies));
-                $room->enemyTypes()->attach($selectedMinorEnemies);
+                for ($j = 0; $j < 2; $j++) {
+                    $template = $minorTemplates->random();
+                    $room->enemies()->save($template->spawn());
+                }
             }
 
             // Add unique enemies to rooms 5 and 10
             if ($i === 5 || $i === 10) {
-                $availableUnique = $uniqueEnemies->where('room_id', null)->first();
-                if ($availableUnique) {
-                    $availableUnique->update(['room_id' => $room->id]);
-                    // Remove this enemy from our collection so it won't be used again
-                    $uniqueEnemies = $uniqueEnemies->where('id', '!=', $availableUnique->id);
+                $uniqueEnemy = $uniqueEnemies->where('is_available', true)->first();
+                if ($uniqueEnemy) {
+                    $uniqueEnemy->update([
+                        'room_id' => $room->id,
+                        'current_hp' => $uniqueEnemy->max_hp,
+                        'is_alive' => true
+                    ]);
+                    // Remove from collection so it won't be used again
+                    $uniqueEnemies = $uniqueEnemies->where('id', '!=', $uniqueEnemy->id);
                 }
             }
         }

@@ -21,18 +21,33 @@ class Room extends Model {
         return $this->belongsTo(Dungeon::class);
     }
 
-    public function enemyTypes(): BelongsToMany {
-        return $this->belongsToMany(EnemyType::class, 'room_enemy_types');
+    public function enemies(): HasMany {
+        return $this->hasMany(Enemy::class);
     }
 
-    public function uniqueEnemies(): HasMany {
-        return $this->hasMany(UniqueEnemy::class);
+    public function getLiveEnemies() {
+        return $this->enemies()
+            ->where('is_alive', true)
+            ->get();
     }
 
-    public function getAllEnemies() {
-        return [
-            'enemy_types' => $this->enemyTypes,
-            'unique_enemies' => $this->uniqueEnemies,
-        ];
+    public function getUniqueEnemies() {
+        return $this->enemies()
+            ->where('is_unique', true)
+            ->get();
+    }
+
+    public function getBaseEnemies() {
+        return $this->enemies()
+            ->where('tier', 'base')
+            ->where('is_unique', false)
+            ->get();
+    }
+
+    public function getMinorEnemies() {
+        return $this->enemies()
+            ->where('tier', 'minor')
+            ->where('is_unique', false)
+            ->get();
     }
 }

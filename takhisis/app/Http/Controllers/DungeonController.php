@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 class DungeonController extends Controller {
     use ApiResponses, HandlesIncludes;
 
-    private array $allowedIncludes = ['rooms', 'rooms.enemyTypes', 'rooms.uniqueEnemies'];
+    private array $allowedIncludes = ['rooms', 'rooms.enemies'];
 
     /**
      * Display a listing of the resource.
