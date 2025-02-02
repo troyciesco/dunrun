@@ -10,26 +10,26 @@ import { PartiesRoute } from "./routes/parties"
 import { PartyRoute } from "./routes/parties/+id"
 import { PartyCreateRoute } from "./routes/parties/create"
 import { RoomRoute } from "./routes/dungeons/rooms/+id"
-import {
-	SignedIn,
-	SignedOut,
-	SignInButton,
-	UserButton
-} from "@clerk/react-router"
+// import {
+// 	SignedIn,
+// 	SignedOut,
+// 	SignInButton,
+// 	UserButton
+// } from "@clerk/react-router"
 
 function App() {
 	return (
 		<div className="flex flex-col min-h-screen">
 			<header className="flex justify-between items-center p-4 border-b">
 				<div>DunRun</div>
-				<div>
+				{/* <div>
 					<SignedOut>
 						<SignInButton />
 					</SignedOut>
 					<SignedIn>
 						<UserButton />
 					</SignedIn>
-				</div>
+				</div> */}
 			</header>
 			<div className="grid grid-cols-12 w-full min-h-[calc(100vh-57px)]">
 				<div className="col-span-2 p-4 space-y-10 border-r">

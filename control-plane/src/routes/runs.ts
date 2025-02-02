@@ -1,5 +1,6 @@
-import { Adventurer, Dungeon, Party } from "@/types"
+import { Adventurer, Dungeon, Env, Party } from "@/types"
 import { Hono } from "hono"
+import { env } from "hono/adapter"
 
 type Run = {
 	id: number
@@ -49,16 +50,15 @@ const simulateRun = async ({
 
 	while (isActive) {
 		// @TODO: error handling
-		const enemies = dungeon.rooms.find(
-			(r) => r.id === Number(currentRoomId)
-		)!.enemies
+		const enemies =
+			dungeon.rooms.find((r) => r.id === Number(currentRoomId))!.enemies || []
 
 		const meta = { dungeonId: dungeon.id, partyId: 1, roomId: currentRoomId }
 		await sendMsg({
 			...meta,
-			message: `The party enters room ${currentRoomId}. It has ${enemies.join(
-				", "
-			)}!`
+			message: `The party enters room ${currentRoomId}. It has ${enemies
+				.map((e) => e.name)
+				.join(", ")}!`
 		})
 
 		for (let i = 0, k = 0; i < adventurers.length; i++, k++) {
@@ -68,14 +68,14 @@ const simulateRun = async ({
 			await sendMsg({
 				...meta,
 				// @TODO: error handling
-				message: `${adventurers[i]!.name} hits ${enemies[k]} for ${
+				message: `${adventurers[i]!.name} hits ${enemies[k]?.name} for ${
 					Math.floor(Math.random() * 20) + 1
 				} damage!`
 			})
 			await sendMsg({
 				...meta,
 				// @TODO: error handling
-				message: `${enemies[k]} hits ${adventurers[i]!.name} for ${
+				message: `${enemies[k]?.name} hits ${adventurers[i]!.name} for ${
 					Math.floor(Math.random() * 20) + 1
 				} damage!`
 			})
@@ -95,7 +95,7 @@ const simulateRun = async ({
 	}
 }
 
-export const runsRoute = new Hono()
+export const runsRoute = new Hono<Env>()
 	.basePath("/runs")
 	.get("/", async (c) => {
 		return c.json(currentRuns)
@@ -125,6 +125,8 @@ export const runsRoute = new Hono()
 		return c.json(newRun)
 	})
 	.post("/:id/execute", async (c) => {
+		const { DM_API_URL } = env(c)
+
 		const run = currentRuns.find(
 			(r) => r.id === Number(c.req.param("id"))
 		) as Run
@@ -136,10 +138,12 @@ export const runsRoute = new Hono()
 			`http://localhost:9999/parties/${run?.partyId}`
 		)
 		const party: Party = await partyFetch.json()
+		console.log(run?.dungeonId)
 		const dungeonFetch = await fetch(
-			`http://localhost:9999/dungeons/${run?.dungeonId}`
+			`${DM_API_URL}/dungeons/${run?.dungeonId}?include=rooms,rooms.enemies`
 		)
-		const dungeon: Dungeon = await dungeonFetch.json()
+		const { data: dungeon }: { data: Dungeon } = await dungeonFetch.json()
+		console.log(dungeon)
 
 		const adventurers: Adventurer[] = await Promise.all(
 			party.adventurers.map(async (member) => {
