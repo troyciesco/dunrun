@@ -35,13 +35,15 @@ export type Adventurer = {
 	intelligence: number
 	wisdom: number
 	charisma: number
+	armor_class: number
 	hp_base: number
 	hp_current: number
 }
 
 export type Party = {
 	id: number
-	adventurers: { adventurerId: number }[]
+	name: string
+	adventurers: Adventurer[]
 }
 
 export type Enemy = {
