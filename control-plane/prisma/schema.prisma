@@ -1,0 +1,47 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Run {
+  id            Int      @id @default(autoincrement())
+  dungeonId     Int
+  partyId       Int
+  currentRoomId Int?
+  status        String
+  battles       Battle[]
+  createdAt     DateTime @default(now()) @db.Timestamp(6)
+}
+
+model Battle {
+  id            Int                 @id @default(autoincrement())
+  roomId        Int
+  runId         Int
+  run           Run                 @relation(fields: [runId], references: [id])
+  status        String
+  participants  BattleParticipant[] @relation("BattleToParticipants")
+  currentTurnId Int?                @unique
+  currentTurn   BattleParticipant?  @relation("BattleToCurrentTurn", fields: [currentTurnId], references: [id])
+  createdAt     DateTime            @default(now()) @db.Timestamp(6)
+}
+
+model BattleParticipant {
+  id                Int     @id @default(autoincrement())
+  battleId          Int
+  battle            Battle  @relation("BattleToParticipants", fields: [battleId], references: [id], onDelete: Cascade)
+  entityId          Int
+  entityType        String
+  cachedHp          Int?
+  turnOrder         Int?
+  battleCurrentTurn Battle? @relation("BattleToCurrentTurn")
+}

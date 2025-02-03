@@ -42,11 +42,8 @@ export function DungeonRoute() {
 		)
 	}
 
-	const handleExecuteRun = async () => {
-		const res = await fetch(`http://localhost:1111/runs`)
-		const runs = await res.json()
-		const run = runs.find((r) => r.dungeonId === Number(params.id))
-		await fetch(`http://localhost:1111/runs/${run.id}/execute`, {
+	const handleExecuteRun = async (id: number) => {
+		await fetch(`http://localhost:1111/runs/${id}/execute`, {
 			method: "POST"
 		})
 	}
@@ -72,17 +69,30 @@ export function DungeonRoute() {
 						))}
 				</div>
 				<div className="grid grid-cols-2 gap-4">
-					<div className="flex gap-4 items-center">
-						<button
-							className="p-2 border cursor-pointer"
-							onClick={handleCreateRun}>
-							Create Run
-						</button>
-						<button
-							className="p-2 border cursor-pointer"
-							onClick={handleExecuteRun}>
-							Execute Run
-						</button>
+					<div>
+						<div className="flex gap-8 items-center mb-4">
+							<h2 className="text-3xl">Runs</h2>
+							<button
+								className="p-2 border cursor-pointer"
+								onClick={handleCreateRun}>
+								Create Run
+							</button>
+						</div>
+						<div>
+							{query.data &&
+								query.data.runs.map((run) => (
+									<div key={run.id} className="flex gap-8 items-center">
+										<div>
+											id: {run.id} | partyId: {run.partyId}
+										</div>
+										<button
+											className="p-2 border cursor-pointer"
+											onClick={() => handleExecuteRun(run.id)}>
+											Execute Run
+										</button>
+									</div>
+								))}
+						</div>
 					</div>
 					<div>
 						<h2 className="text-3xl">Events</h2>
