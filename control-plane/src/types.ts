@@ -41,7 +41,7 @@ export type Adventurer = {
 
 export type Party = {
 	id: number
-	adventurers: { adventurerId: number }[]
+	adventurers: Adventurer[]
 }
 
 export type Enemy = {

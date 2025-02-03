@@ -36,13 +36,88 @@ const sendMsg = async ({
 	})
 }
 
+// @ts-expect-error
 const simulateRun = async ({
 	run,
-	adventurers,
+	party,
 	dungeon
 }: {
 	run: Run
-	adventurers: Adventurer[]
+	party: Party
+	dungeon: Dungeon
+}) => {
+	let isActive = run.status === "active"
+	let currentRoomId = run.roomId
+
+	while (isActive) {
+		// @TODO: error handling
+		const enemies =
+			dungeon.rooms.find((r) => r.id === Number(currentRoomId))!.enemies || []
+
+		const meta = {
+			//
+			dungeonId: dungeon.id,
+			partyId: party.id,
+			roomId: currentRoomId
+		}
+		await sendMsg({
+			...meta,
+			message: `The party enters room ${currentRoomId}. It has ${enemies
+				.map((e) => e.name)
+				.join(", ")}!`
+		})
+
+		// roll for initiative (or maybe just random sort. does something other than an array of ids make sense here?)
+		// first character chooses target - lowest current_hp of opponents
+		// character chooses melee, ranged, or spell based on class and stats
+		// rolls 1d20, adds proficiency bonus (?), adds stat bonus, compares to opponent AC
+		// if attack roll > AC, attack hits. (or is it >=?)
+		// damage roll is 1d8 for everyone for now
+		// POST to something like /enemy/{id}, subtract from current_hp, check if it's now 0, and if it is update the enemy's is_knocked_out field and send that plus new_hp back to the requesting process.
+		// if they're knocked out, remove them from the round robin
+		// if that team no longer has players in the round robin, end the simulation. otherwise it's the next person's turn.
+
+		for (let i = 0, k = 0; i < party.adventurers.length; i++, k++) {
+			if (k > enemies.length - 1) {
+				k = 0
+			}
+			await sendMsg({
+				...meta,
+				// @TODO: error handling
+				message: `${party.adventurers[i]!.name} hits ${enemies[k]?.name} for ${
+					Math.floor(Math.random() * 20) + 1
+				} damage!`
+			})
+			await sendMsg({
+				...meta,
+				// @TODO: error handling
+				message: `${enemies[k]?.name} hits ${party.adventurers[i]!.name} for ${
+					Math.floor(Math.random() * 20) + 1
+				} damage!`
+			})
+		}
+
+		// @TODO: error handling
+		if (currentRoomId === dungeon.rooms[dungeon.rooms.length - 1]!.id) {
+			const runIndex = currentRuns.indexOf(run)
+			isActive = false
+			currentRuns[runIndex]!.status = "completed"
+		} else {
+			const idx = dungeon.rooms.findIndex((r) => r.id === currentRoomId)
+			// @TODO: error handling
+			currentRoomId = dungeon.rooms[idx + 1]!.id
+			console.log(currentRoomId)
+		}
+	}
+}
+
+const simulateRunV1 = async ({
+	run,
+	party,
+	dungeon
+}: {
+	run: Run
+	party: Party
 	dungeon: Dungeon
 }) => {
 	let isActive = run.status === "active"
@@ -61,21 +136,21 @@ const simulateRun = async ({
 				.join(", ")}!`
 		})
 
-		for (let i = 0, k = 0; i < adventurers.length; i++, k++) {
+		for (let i = 0, k = 0; i < party.adventurers.length; i++, k++) {
 			if (k > enemies.length - 1) {
 				k = 0
 			}
 			await sendMsg({
 				...meta,
 				// @TODO: error handling
-				message: `${adventurers[i]!.name} hits ${enemies[k]?.name} for ${
+				message: `${party.adventurers[i]!.name} hits ${enemies[k]?.name} for ${
 					Math.floor(Math.random() * 20) + 1
 				} damage!`
 			})
 			await sendMsg({
 				...meta,
 				// @TODO: error handling
-				message: `${enemies[k]?.name} hits ${adventurers[i]!.name} for ${
+				message: `${enemies[k]?.name} hits ${party.adventurers[i]!.name} for ${
 					Math.floor(Math.random() * 20) + 1
 				} damage!`
 			})
@@ -136,21 +211,11 @@ export const runsRoute = new Hono<Env>()
 
 		const partyFetch = await fetch(`${PM_API_URL}/parties/${run?.partyId}`)
 		const party: Party = await partyFetch.json()
-		console.log(run?.dungeonId)
+
 		const dungeonFetch = await fetch(
 			`${DM_API_URL}/dungeons/${run?.dungeonId}?include=rooms,rooms.enemies`
 		)
 		const { data: dungeon }: { data: Dungeon } = await dungeonFetch.json()
-		console.log(dungeon)
-
-		const adventurers: Adventurer[] = await Promise.all(
-			party.adventurers.map(async (member) => {
-				const response = await fetch(
-					`${PM_API_URL}/adventurers/${member.adventurerId}`
-				)
-				return response.json()
-			})
-		)
 
 		sendMsg({
 			dungeonId: dungeon.id,
@@ -158,6 +223,6 @@ export const runsRoute = new Hono<Env>()
 			roomId: 1,
 			message: "The party has started the run in the dungeon!"
 		})
-		simulateRun({ run, adventurers, dungeon })
+		simulateRunV1({ run, party, dungeon })
 		return c.json("run started")
 	})
