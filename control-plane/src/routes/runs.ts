@@ -116,70 +116,93 @@ const simulateRun = async ({
 	})
 
 	// @TODO: maybe this should actually be a linked list? although i think lookups will be less efficient
-	const initiativeOrder = [...adventurers, ...enemies].sort(
+	let initiativeOrder = [...adventurers, ...enemies].sort(
 		(a, b) => a.turnOrder! - b.turnOrder!
 	)
 
-	const startedBattle = await prisma.battle.update({
+	let startedBattle = await prisma.battle.update({
 		where: { id: battle.id },
 		data: { currentTurnId: initiativeOrder[0]!.id, status: "active" }
 	})
 
-	const activeEntity = initiativeOrder.find(
-		(entity) => entity.id === startedBattle.currentTurnId
-	)
-
-	const targetedEntity = initiativeOrder.find(
-		(entity) =>
-			(entity.cachedHp as number) > 0 &&
-			entity.entityType ===
-				(activeEntity?.entityType === "adventurer" ? "enemy" : "adventurer")
-	)
-	console.log(activeEntity)
-	console.log(targetedEntity)
-
-	const damage = Math.floor(Math.random() * 11)
-
-	if (damage === 0) {
-		console.log(
-			`${activeEntity?.entityType} ${activeEntity?.entityId} tried to hit ${targetedEntity?.entityType} ${targetedEntity?.entityId} but missed!`
+	while (isActive) {
+		const activeEntity = initiativeOrder.find(
+			(entity) => entity.id === startedBattle.currentTurnId
 		)
-	} else {
-		const damageResult =
-			targetedEntity!.cachedHp! - damage > 0 ? { decrement: damage } : 0
-		await prisma.battleParticipant.update({
-			where: { id: targetedEntity!.id },
-			data: { cachedHp: damageResult }
-		})
-		console.log(
-			`${activeEntity?.entityType} ${activeEntity?.entityId} hit ${targetedEntity?.entityType} ${targetedEntity?.entityId} for ${damage} damage!`
+
+		const targetedEntity = initiativeOrder.find(
+			(entity) =>
+				entity.cachedHp! > 0 &&
+				entity.entityType ===
+					(activeEntity?.entityType === "adventurer" ? "enemy" : "adventurer")
 		)
-	}
 
-	const activeIndex = initiativeOrder.findIndex(
-		(i) => i.id === activeEntity?.id
-	)
+		if (!targetedEntity) {
+			console.log(
+				`battle complete! Victory for the ${activeEntity?.entityType}`
+			)
+			await prisma.battle.update({
+				where: { id: battle.id },
+				data: {
+					status: "completed",
+					currentTurn: { disconnect: true }
+				}
+			})
+			isActive = false
+			break
+		}
 
-	// First try searching from current position to end
-	let nextActiveEntity = initiativeOrder
-		.slice(activeIndex + 1)
-		.find((entity) => (entity.cachedHp as number) > 0)
+		const damage = Math.floor(Math.random() * 11)
 
-	// If not found, wrap around to beginning and search up to (and incl.) current position
-	if (!nextActiveEntity) {
-		nextActiveEntity = initiativeOrder
-			.slice(0, activeIndex + 1)
+		if (damage === 0) {
+			console.log(
+				`${activeEntity?.entityType} ${activeEntity?.entityId} tried to hit ${targetedEntity?.entityType} ${targetedEntity?.entityId} but missed!`
+			)
+		} else {
+			const damageResult =
+				targetedEntity!.cachedHp! - damage > 0
+					? { decrement: damage }
+					: { set: 0 }
+			const updatedEntity = await prisma.battleParticipant.update({
+				where: { id: targetedEntity!.id },
+				data: { cachedHp: damageResult }
+			})
+			initiativeOrder = initiativeOrder.map((entity) =>
+				entity.id === updatedEntity.id ? updatedEntity : entity
+			)
+			console.log(
+				`${activeEntity?.entityType} ${activeEntity?.entityId} hit ${targetedEntity?.entityType} ${targetedEntity?.entityId} for ${damage} damage!`
+			)
+			console.log("damage result", damageResult)
+			if (updatedEntity.cachedHp === 0) {
+				console.log(
+					`${updatedEntity.entityType} ${updatedEntity.entityId} knocked out!`
+				)
+			}
+		}
+
+		const activeIndex = initiativeOrder.findIndex(
+			(i) => i.id === activeEntity?.id
+		)
+
+		// First try searching from current position to end
+		let nextActiveEntity = initiativeOrder
+			.slice(activeIndex + 1)
 			.find((entity) => (entity.cachedHp as number) > 0)
-	}
 
-	console.log("%%%%%%%%%%%%%")
-	console.log("active", activeEntity)
-	console.log("next", nextActiveEntity)
-	console.log("%%%%%%%%%%%%%")
-	await prisma.battle.update({
-		where: { id: battle.id },
-		data: { currentTurnId: nextActiveEntity!.id }
-	})
+		// If not found, wrap around to beginning and search up to (and incl.) current position
+		if (!nextActiveEntity) {
+			nextActiveEntity = initiativeOrder
+				.slice(0, activeIndex + 1)
+				.find((entity) => (entity.cachedHp as number) > 0)
+		}
+
+		startedBattle = await prisma.battle.update({
+			where: { id: battle.id },
+			data: { currentTurnId: nextActiveEntity!.id }
+		})
+		await new Promise((resolve) => setTimeout(resolve, 1000))
+	}
 
 	// 	// roll for initiative (or maybe just random sort. does something other than an array of ids make sense here?)
 	// 	// first character chooses target - lowest current_hp of opponents
