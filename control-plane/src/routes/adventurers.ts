@@ -1,6 +1,7 @@
 import { Adventurer, Env } from "@/types"
 import { Hono } from "hono"
 import { env } from "hono/adapter"
+import { prisma } from "~/prisma/client"
 
 export const adventurers = new Hono<Env>()
 	.basePath("/adventurers")
@@ -8,6 +9,7 @@ export const adventurers = new Hono<Env>()
 		const { PM_API_URL } = env(c)
 		const res = await fetch(`${PM_API_URL}/adventurers`)
 		const data = await res.json()
+
 		const adventurers: Adventurer[] = data.map(
 			({
 				adventurer_class,
@@ -23,6 +25,15 @@ export const adventurers = new Hono<Env>()
 		const { PM_API_URL } = env(c)
 
 		const res = await fetch(`${PM_API_URL}/adventurers/${c.req.param("id")}`)
-		const data: Adventurer = await res.json()
-		return c.json(data)
+		const adventurer: Adventurer = await res.json()
+		const battleData = await prisma.battleParticipant.findMany({
+			where: { entityId: adventurer.id, entityType: "adventurer" },
+			include: { battle: true }
+		})
+
+		return c.json({
+			...adventurer,
+			class: adventurer.adventurer_class,
+			battleData
+		})
 	})
