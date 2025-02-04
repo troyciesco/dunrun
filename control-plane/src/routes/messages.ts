@@ -27,6 +27,7 @@ export function createMessageRoutes(server: any) {
 
 			messages.push(message)
 			server.publish(topic, JSON.stringify(message))
+
 			await new Promise((resolve) => setTimeout(resolve, 1000))
 
 			return c.json({ ok: true })

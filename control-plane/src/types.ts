@@ -41,6 +41,7 @@ export type Adventurer = {
 
 export type Party = {
 	id: number
+	name: string
 	adventurers: Adventurer[]
 }
 

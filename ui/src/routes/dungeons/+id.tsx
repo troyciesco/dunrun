@@ -1,10 +1,12 @@
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router"
 import { Dungeon } from "@/types"
 
 export function DungeonRoute() {
 	const params = useParams()
+	const queryClient = useQueryClient()
+
 	const query = useQuery<Dungeon>({
 		queryKey: ["dungeons", params.id],
 		queryFn: async () =>
@@ -40,6 +42,7 @@ export function DungeonRoute() {
 				// body: JSON.stringify({ dungeonId: Number(params.id), partyId: 1 })
 			}
 		)
+		queryClient.invalidateQueries({ queryKey: ["dungeons", params.id] })
 	}
 
 	const handleExecuteRun = async (id: number) => {

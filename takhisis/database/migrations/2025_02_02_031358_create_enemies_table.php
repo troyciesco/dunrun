@@ -16,6 +16,13 @@ return new class extends Migration {
             $table->string('base_type')->nullable();  // goblin, skeleton, etc
             $table->enum('tier', ['base', 'minor', 'major']);
             $table->boolean('is_unique')->default(false);
+            $table->integer('strength');
+            $table->integer('dexterity');
+            $table->integer('constitution');
+            $table->integer('intelligence');
+            $table->integer('wisdom');
+            $table->integer('charisma');
+            $table->integer('armor_class');
             $table->integer('current_hp');
             $table->integer('max_hp');
             $table->boolean('is_alive')->default(true);

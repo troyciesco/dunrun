@@ -42,7 +42,7 @@ class RoomFactory extends Factory {
             ]);
 
             // Add 2-6 base enemies to every room
-            $baseCount = fake()->numberBetween(2, 6);
+            $baseCount = fake()->numberBetween(2, 4);
             for ($j = 0; $j < $baseCount; $j++) {
                 $template = $baseTemplates->random();
                 $room->enemies()->save($template->spawn());

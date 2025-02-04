@@ -22,19 +22,23 @@ class Adventurer(models.Model):
 
     name = models.CharField(max_length=255)
     species = models.CharField(max_length=255, choices=Species.choices)
-    adventurer_class = models.CharField(max_length=255, choices=AdventurerClass.choices)
+    adventurer_class = models.CharField(
+        max_length=255, choices=AdventurerClass.choices, default=AdventurerClass.FIGHTER
+    )
     level = models.PositiveSmallIntegerField(
         default=1, validators=[MinValueValidator(1)]
     )
-    strength = models.PositiveSmallIntegerField(default=8)
-    dexterity = models.PositiveSmallIntegerField(default=8)
-    constitution = models.PositiveSmallIntegerField(default=8)
-    intelligence = models.PositiveSmallIntegerField(default=8)
+    strength = models.PositiveSmallIntegerField(default=15)
+    dexterity = models.PositiveSmallIntegerField(default=13)
+    constitution = models.PositiveSmallIntegerField(default=14)
+    intelligence = models.PositiveSmallIntegerField(default=12)
     wisdom = models.PositiveSmallIntegerField(default=8)
-    charisma = models.PositiveSmallIntegerField(default=8)
-    armor_class = models.PositiveSmallIntegerField(default=10)
-    hp_base = models.PositiveSmallIntegerField(default=10)
-    hp_current = models.PositiveSmallIntegerField(default=10)
+    charisma = models.PositiveSmallIntegerField(default=10)
+    # For now, everyone is wearing studded leather armor
+    armor_class = models.PositiveSmallIntegerField(default=12)
+    # based on fighter 1d10 hit dice + constitution modifier (2)
+    hp_base = models.PositiveSmallIntegerField(default=12)
+    hp_current = models.PositiveSmallIntegerField(default=12)
     party = models.ForeignKey(
         "Party",
         on_delete=models.SET_NULL,
