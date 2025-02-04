@@ -1,9 +1,9 @@
-import { useAuth } from "@clerk/react-router"
+// import { useAuth } from "@clerk/react-router"
 import { useEffect, useState } from "react"
 import { Link } from "react-router"
 
 export function Home() {
-	const { getToken } = useAuth()
+	// const { getToken } = useAuth()
 	const [messages, setMessages] = useState<string[]>([])
 	// info about double messages https://github.com/facebook/create-react-app/issues/10387
 	useEffect(() => {
@@ -28,32 +28,32 @@ export function Home() {
 		})
 	}
 
-	const handleCheckAuth = async () => {
-		console.log("hit")
-		const token = await getToken()
-		const res = await fetch(`http://localhost:1111`, {
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${token}`
-			}
-		})
-		const data = await res.json()
-		console.log(data)
-	}
+	// const handleCheckAuth = async () => {
+	// 	console.log("hit")
+	// 	const token = await getToken()
+	// 	const res = await fetch(`http://localhost:1111`, {
+	// 		headers: {
+	// 			"Content-Type": "application/json",
+	// 			Authorization: `Bearer ${token}`
+	// 		}
+	// 	})
+	// 	const data = await res.json()
+	// 	console.log(data)
+	// }
 	return (
 		<div>
-			<h1 className="text-7xl mb-10">hello world</h1>
-			<div className="flex items-center gap-4">
+			<h1 className="mb-10 text-7xl">hello world</h1>
+			<div className="flex gap-4 items-center">
 				<button
-					className="py-2 px-4 border cursor-pointer"
+					className="px-4 py-2 border cursor-pointer"
 					onClick={handleClick}>
-					clickkk
+					post to events
 				</button>
-				<button
-					className="py-2 px-4 border cursor-pointer"
+				{/* <button
+					className="px-4 py-2 border cursor-pointer"
 					onClick={handleCheckAuth}>
 					check auth
-				</button>
+				</button> */}
 			</div>
 			<Link to="/dungeons">Go to dungeons</Link>
 			{messages.map((message) => (
