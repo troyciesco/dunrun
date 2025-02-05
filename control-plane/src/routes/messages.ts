@@ -1,10 +1,9 @@
 import { Hono } from "hono"
-// import type { Server } from "your-server-type" // adjust import based on your WebSocket server type
+import { randomUUIDv7, type Server } from "bun"
 
 const topic = "dungeon-runs"
 
-// Create a function that returns the routes and takes server as parameter
-export function createMessageRoutes(server: any) {
+export function createMessageRoutes(server: Server) {
 	const messages: any[] = []
 
 	return new Hono()
@@ -16,7 +15,7 @@ export function createMessageRoutes(server: any) {
 			const data = await c.req.text()
 			const currentDateTime = new Date()
 			const body = {
-				id: Number(currentDateTime),
+				id: randomUUIDv7(),
 				date: currentDateTime.toLocaleString(),
 				data
 			}

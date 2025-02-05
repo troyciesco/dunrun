@@ -27,8 +27,7 @@ const sendMsg = async ({
 	message: string
 	[key: string]: any
 }) => {
-	console.log("start of send msg", message)
-	const res = await fetch(`http://localhost:1111/messages`, {
+	await fetch(`http://localhost:1111/messages`, {
 		method: "POST",
 		body: JSON.stringify({
 			meta: {
@@ -40,8 +39,6 @@ const sendMsg = async ({
 			message
 		})
 	})
-	const data = await res.json()
-	console.log(data)
 }
 
 // https://www.codemzy.com/blog/shuffle-array-javascript
@@ -67,6 +64,21 @@ const getDidAttackRollSucceed = ({ activeEntity, targetedEntity }: any) => {
 		ABILITY_SCORE_MODIFIERS[activeEntity.strength as AbilityScoreKey] +
 		PROFICIENCY_BONUS
 
+	console.log(
+		"attack roll:",
+		rollPlusModifiers,
+		"roll: ",
+		roll,
+		"mod: ",
+		ABILITY_SCORE_MODIFIERS[activeEntity.strength as AbilityScoreKey],
+		"prof: ",
+		PROFICIENCY_BONUS
+	)
+	console.log(
+		"ac:",
+		targetedEntity.armor_class +
+			ABILITY_SCORE_MODIFIERS[targetedEntity.dexterity as AbilityScoreKey]
+	)
 	return (
 		rollPlusModifiers >=
 		targetedEntity.armor_class +
@@ -86,7 +98,11 @@ const simulateRun = async ({
 	let isRunActive = run.status === "active"
 	let currentRoomId = run.currentRoomId
 
+	let attacks = 0
+	let hits = 0
 	while (isRunActive) {
+		await new Promise((resolve) => setTimeout(resolve, 1000))
+
 		const battle = await prisma.battle.create({
 			data: {
 				roomId: currentRoomId,
@@ -169,6 +185,8 @@ const simulateRun = async ({
 		let isBattleActive = startedBattle.status === "active"
 
 		while (isBattleActive) {
+			await new Promise((resolve) => setTimeout(resolve, 1000))
+
 			const activeEntity = initiativeOrder.find(
 				(entity) => entity.id === startedBattle.currentTurnId
 			)
@@ -241,6 +259,16 @@ const simulateRun = async ({
 				activeEntity: activeEntityDetails,
 				targetedEntity: targetedEntityDetails
 			})
+			attacks += 1
+			hits = attackRollSucceeded ? hits + 1 : hits
+			console.log(
+				"attacks: ",
+				attacks,
+				"hits: ",
+				hits,
+				"rate: ",
+				(hits / attacks).toFixed(2)
+			)
 
 			if (!attackRollSucceeded) {
 				sendMsg({
@@ -299,7 +327,6 @@ const simulateRun = async ({
 				where: { id: battle.id },
 				data: { currentTurnId: nextActiveEntity!.id }
 			})
-			await new Promise((resolve) => setTimeout(resolve, 1000))
 		}
 	}
 }

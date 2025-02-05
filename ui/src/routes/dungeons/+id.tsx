@@ -2,6 +2,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router"
 import { Dungeon } from "@/types"
+import { AnimatePresence, motion } from "motion/react"
+import { cn } from "../../utils"
 
 export function DungeonRoute() {
 	const params = useParams()
@@ -99,14 +101,43 @@ export function DungeonRoute() {
 					</div>
 					<div>
 						<h2 className="text-3xl">Events</h2>
-						<div className="space-y-2">
-							{messages &&
+						<ul className="px-8 space-y-2">
+							{/* {messages &&
 								messages.map((message) => (
-									<div key={message.body.id}>
+									<motion.div
+										key={message.body.id}
+										initial={{ scale: 0.9, opacity: 0 }}
+										animate={{ scale: 1, opacity: 1 }}
+										className="p-2 border">
 										{JSON.parse(message.body.data).message}
-									</div>
-								))}
-						</div>
+									</motion.div>
+								))} */}
+							<AnimatePresence>
+								{messages.map((message) => {
+									const isKnockout = JSON.parse(
+										message.body.data
+									).message.includes("knocked out")
+									return (
+										<motion.li
+											key={message.body.id}
+											exit={{ opacity: 1 }}
+											transition={{ ease: "easeOut", duration: 0.8 }}
+											className={cn(
+												"p-2 bg-white border",
+												isKnockout && "bg-red-200 border-red-600"
+											)}
+											layout>
+											<div>
+												<div>{message.body.date}</div>
+												<div className={cn(isKnockout && "font-bold")}>
+													{JSON.parse(message.body.data).message}
+												</div>
+											</div>
+										</motion.li>
+									)
+								})}
+							</AnimatePresence>
+						</ul>
 					</div>
 				</div>
 			</div>
