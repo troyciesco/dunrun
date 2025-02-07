@@ -1,5 +1,5 @@
 // import { useAuth } from "@clerk/react-router"
-import { EventCard } from "@/components/EventCard"
+import { EventCard } from "../components/EventCard"
 import { AnimatePresence } from "motion/react"
 import { useEffect, useState } from "react"
 import { Link } from "react-router"
@@ -65,7 +65,7 @@ export function Home() {
 					)
 					return (
 						<EventCard
-							key={message.data.id}
+							key={message.body.id}
 							message={message}
 							isKnockout={isKnockout}
 						/>

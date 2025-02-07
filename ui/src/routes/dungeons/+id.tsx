@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router"
 import { Dungeon } from "@/types"
 import { AnimatePresence } from "motion/react"
-import { EventCard } from "@/components/EventCard"
+import { EventCard } from "../../components/EventCard"
 
 export function DungeonRoute() {
 	const params = useParams()
@@ -109,7 +109,7 @@ export function DungeonRoute() {
 									).message.includes("knocked out")
 									return (
 										<EventCard
-											key={message.data.id}
+											key={message.body.id}
 											message={message}
 											isKnockout={isKnockout}
 										/>

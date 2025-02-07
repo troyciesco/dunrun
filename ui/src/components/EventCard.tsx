@@ -1,4 +1,4 @@
-import { cn } from "@/utils"
+import { cn } from "../utils"
 import { motion } from "motion/react"
 
 export const EventCard = ({
