@@ -5,6 +5,12 @@ import { Dungeon } from "@/types"
 import { AnimatePresence } from "motion/react"
 import { EventCard } from "../../components/EventCard"
 
+type Message = {
+	body: {
+		id: number
+		data: string
+	}
+}
 export function DungeonRoute() {
 	const params = useParams()
 	const queryClient = useQueryClient()
@@ -17,7 +23,7 @@ export function DungeonRoute() {
 			)
 	})
 
-	const [messages, setMessages] = useState<any[]>([])
+	const [messages, setMessages] = useState<Message[]>([])
 	useEffect(() => {
 		const ws = new WebSocket("ws://localhost:1111/ws")
 		ws.onopen = () => {

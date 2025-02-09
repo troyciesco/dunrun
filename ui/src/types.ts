@@ -67,9 +67,15 @@ export type Room = {
 	enemies?: Enemy[]
 }
 
+export type Run = {
+	id: number
+	partyId: number
+}
+
 export type Dungeon = {
 	id: number
 	name: string
 	location: string
 	rooms: Room[]
+	runs: Run[]
 }
