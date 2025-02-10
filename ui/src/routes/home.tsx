@@ -26,7 +26,7 @@ export function Home() {
 	const handleClick = async () => {
 		await fetch(`http://localhost:1111/messages`, {
 			method: "POST",
-			body: "hiiii"
+			body: JSON.stringify({ message: "hiiii" })
 		})
 	}
 
@@ -60,13 +60,15 @@ export function Home() {
 			<Link to="/dungeons">Go to dungeons</Link>
 			<AnimatePresence>
 				{messages.map((message) => {
-					const isKnockout = JSON.parse(message.body.data).message.includes(
-						"knocked out"
-					)
+					const isKnockout =
+						message.body &&
+						JSON.parse(message.body?.data).message.includes("knocked out")
+					console.log(message)
+					const parsedMessage = JSON.parse(message)
 					return (
 						<EventCard
-							key={message.body.id}
-							message={message}
+							key={parsedMessage.body.id}
+							message={parsedMessage}
 							isKnockout={isKnockout}
 						/>
 					)
