@@ -79,3 +79,5 @@ export type Dungeon = {
 	rooms: Room[]
 	runs: Run[]
 }
+
+export type Message = any

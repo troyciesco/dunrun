@@ -1,4 +1,5 @@
 // import { useAuth } from "@clerk/react-router"
+import { Message } from "@/types"
 import { EventCard } from "../components/EventCard"
 import { AnimatePresence } from "motion/react"
 import { useEffect, useState } from "react"
@@ -6,7 +7,7 @@ import { Link } from "react-router"
 
 export function Home() {
 	// const { getToken } = useAuth()
-	const [messages, setMessages] = useState<any[]>([])
+	const [messages, setMessages] = useState<Message[]>([])
 	// info about double messages https://github.com/facebook/create-react-app/issues/10387
 	useEffect(() => {
 		const ws = new WebSocket("ws://localhost:1111/ws")
@@ -63,7 +64,7 @@ export function Home() {
 					const isKnockout =
 						message.body &&
 						JSON.parse(message.body?.data).message.includes("knocked out")
-					console.log(message)
+
 					const parsedMessage = JSON.parse(message)
 					return (
 						<EventCard

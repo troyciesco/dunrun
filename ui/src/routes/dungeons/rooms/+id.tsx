@@ -1,4 +1,4 @@
-import { Dungeon, Room } from "@/types"
+import { Dungeon, Message, Room } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router"
@@ -18,7 +18,7 @@ export function RoomRoute() {
 			query.data.rooms.find((r) => r.number === Number(params.roomNumber))) ||
 		null
 
-	const [messages, setMessages] = useState<any[]>([])
+	const [messages, setMessages] = useState<Message[]>([])
 	useEffect(() => {
 		const ws = new WebSocket("ws://localhost:1111/ws")
 		ws.onopen = () => {

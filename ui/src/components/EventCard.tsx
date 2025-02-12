@@ -1,3 +1,4 @@
+import { Message } from "@/types"
 import { cn } from "../utils"
 import { motion } from "motion/react"
 
@@ -5,7 +6,7 @@ export const EventCard = ({
 	message,
 	isKnockout
 }: {
-	message: any
+	message: Message
 	isKnockout: boolean
 }) => {
 	return (
